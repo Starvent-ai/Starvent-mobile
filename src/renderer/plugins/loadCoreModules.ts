@@ -1,0 +1,9 @@
+// Side-effect imports: each of these calls pluginRegistry.register(...)
+// as soon as it loads. Adding a new module means adding one line here —
+// the shell (App.tsx / Sidebar.tsx) never needs to change.
+import "@/modules/dashboard";
+import "@/modules/inventory";
+import "@/modules/sales";
+import "@/modules/customers";
+import "@/modules/settings";
+import "@/plugins/examples/aiSuggestionsPlugin";

@@ -1,0 +1,339 @@
+@import "vazirmatn/Vazirmatn-font-face.css";
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--sv-bg);
+  color: var(--sv-text-100);
+  font-family: var(--sv-font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--sv-gold-700);
+  color: var(--sv-text-100);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sv-gold-500);
+  outline-offset: 2px;
+  border-radius: var(--sv-radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- App shell ---------- */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  height: 100vh;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sv-space-8);
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+  background: var(--sv-surface);
+  border-inline-start: 1px solid var(--sv-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--sv-space-6) var(--sv-space-4);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-3);
+  padding: 0 var(--sv-space-2) var(--sv-space-6);
+  margin-bottom: var(--sv-space-4);
+  border-bottom: 1px solid var(--sv-border);
+}
+
+.sidebar__brand img {
+  width: 34px;
+  height: 34px;
+}
+
+.sidebar__brand-name {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--sv-gold-100);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sv-space-1);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-3);
+  padding: 10px var(--sv-space-3);
+  border-radius: var(--sv-radius-md);
+  color: var(--sv-text-400);
+  background: transparent;
+  border: none;
+  text-align: right;
+  font-size: 14px;
+  transition: background-color 160ms var(--sv-ease), color 160ms var(--sv-ease);
+}
+
+.sidebar__link:hover {
+  background: var(--sv-surface-raised);
+  color: var(--sv-text-100);
+}
+
+.sidebar__link[data-active="true"] {
+  background: linear-gradient(90deg, rgba(201, 151, 44, 0.18), transparent);
+  color: var(--sv-gold-100);
+  border-inline-end: 2px solid var(--sv-gold-500);
+}
+
+.sidebar__icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+/* ---------- Top bar & signature orbit accent ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sv-space-6) var(--sv-space-8) 0;
+}
+
+.topbar__title-group {
+  position: relative;
+}
+
+.topbar__title {
+  font-family: var(--sv-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0;
+  color: var(--sv-text-100);
+}
+
+.topbar__subtitle {
+  color: var(--sv-text-600);
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+/* The orbit underline echoes the elliptical ring that swoops around the
+   star in the Starvent mark — used once, here, as the page's signature. */
+.topbar__orbit {
+  position: absolute;
+  bottom: -10px;
+  right: 0;
+  width: 72px;
+  height: 10px;
+  overflow: visible;
+}
+
+.topbar__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-3);
+  color: var(--sv-text-600);
+  font-size: 12px;
+}
+
+.topbar__badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  color: var(--sv-gold-300);
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  background: var(--sv-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-lg);
+  padding: var(--sv-space-6);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--sv-space-4);
+  margin-top: var(--sv-space-8);
+}
+
+.stat-card {
+  background: var(--sv-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-lg);
+  padding: var(--sv-space-5, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sv-space-2);
+}
+
+.stat-card__label {
+  color: var(--sv-text-600);
+  font-size: 12.5px;
+}
+
+.stat-card__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--sv-text-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card__trend {
+  font-size: 12px;
+}
+
+.stat-card__trend[data-trend="up"] {
+  color: var(--sv-success);
+}
+
+.stat-card__trend[data-trend="down"] {
+  color: var(--sv-danger);
+}
+
+.stat-card__trend[data-trend="flat"] {
+  color: var(--sv-text-600);
+}
+
+/* ---------- Tables ---------- */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--sv-space-4);
+  font-size: 13px;
+}
+
+.data-table th {
+  text-align: right;
+  color: var(--sv-text-600);
+  font-weight: 500;
+  padding: var(--sv-space-3);
+  border-bottom: 1px solid var(--sv-border);
+}
+
+.data-table td {
+  padding: var(--sv-space-3);
+  border-bottom: 1px solid var(--sv-border);
+  color: var(--sv-text-100);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table__low-stock {
+  color: var(--sv-warning);
+  font-weight: 600;
+}
+
+/* ---------- Forms ---------- */
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sv-space-4);
+  margin-bottom: var(--sv-space-4);
+}
+
+label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--sv-text-400);
+  margin-bottom: var(--sv-space-1);
+}
+
+input,
+select {
+  width: 100%;
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  color: var(--sv-text-100);
+  padding: 9px 10px;
+  font-family: inherit;
+  font-size: 13.5px;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--sv-gold-500);
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--sv-gold-300), var(--sv-gold-500));
+  color: #1a1305;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--sv-radius-sm);
+  padding: 10px 18px;
+  font-size: 13.5px;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--sv-border-strong);
+  color: var(--sv-text-100);
+  border-radius: var(--sv-radius-sm);
+  padding: 10px 18px;
+  font-size: 13.5px;
+}
+
+.empty-state {
+  color: var(--sv-text-600);
+  text-align: center;
+  padding: var(--sv-space-8);
+}
