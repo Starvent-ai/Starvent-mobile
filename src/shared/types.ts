@@ -102,3 +102,47 @@ export interface RepairTicket {
   customerSignature: string | null;
   createdAt: string;
 }
+
+export interface Supplier {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  contractNotes: string;
+  /** Positive: shop owes the supplier. Negative: supplier owes the shop. */
+  balance: number;
+  rating: number;
+  createdAt: string;
+}
+
+export interface SupplierPurchase {
+  id: string;
+  supplierId: string;
+  itemDescription: string;
+  amount: number;
+  date: string;
+  paid: boolean;
+}
+
+export type AccountingCategory = "فروش" | "خرید کالا" | "اجاره" | "حقوق" | "قبوض" | "سایر";
+
+export interface CashTransaction {
+  id: string;
+  type: "درآمد" | "هزینه";
+  account: "صندوق" | "بانک";
+  category: AccountingCategory;
+  amount: number;
+  description: string;
+  date: string;
+  createdAt: string;
+}
+
+export interface CheckRecord {
+  id: string;
+  direction: "دریافتنی" | "پرداختنی";
+  payerOrPayee: string;
+  amount: number;
+  dueDate: string;
+  status: "در جریان" | "وصول شده" | "برگشتی";
+  createdAt: string;
+}

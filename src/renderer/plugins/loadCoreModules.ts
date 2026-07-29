@@ -6,5 +6,7 @@ import "@/modules/inventory";
 import "@/modules/sales";
 import "@/modules/customers";
 import "@/modules/repairs";
+import "@/modules/suppliers";
+import "@/modules/accounting";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";

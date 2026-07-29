@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Store from "electron-store";
-import { registerMobilePriceHandlers } from "./mobilePrices";
+import { registerMobilePriceHandlers } from "./mobilePrices.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
