@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Store from "electron-store";
+import { registerMobilePriceHandlers } from "./mobilePrices";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -19,6 +20,31 @@ const isDev = process.env.NODE_ENV === "development" || !app.isPackaged;
 const DEV_SERVER_URL = "http://localhost:5173";
 
 let mainWindow: BrowserWindow | null = null;
+let splashWindow: BrowserWindow | null = null;
+
+function createSplashWindow(): void {
+  splashWindow = new BrowserWindow({
+    width: 420,
+    height: 300,
+    frame: false,
+    resizable: false,
+    movable: false,
+    show: true,
+    backgroundColor: "#0a0a0d",
+    icon: path.join(__dirname, "../../build/icon.ico"),
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  });
+
+  void splashWindow.loadFile(path.join(__dirname, "splash.html"));
+
+  splashWindow.on("closed", () => {
+    splashWindow = null;
+  });
+}
 
 function createMainWindow(): void {
   mainWindow = new BrowserWindow({
@@ -39,6 +65,10 @@ function createMainWindow(): void {
   });
 
   mainWindow.once("ready-to-show", () => {
+    // Swap the splash window out for the real window at the same moment,
+    // so there's never a visible gap (blank screen) or overlap (both
+    // windows on screen) between the two.
+    splashWindow?.close();
     mainWindow?.show();
   });
 
@@ -66,7 +96,10 @@ ipcMain.handle("settings:set", (_event, key: string, value: unknown) => {
   return true;
 });
 
+registerMobilePriceHandlers(settingsStore, () => BrowserWindow.getAllWindows());
+
 app.whenReady().then(() => {
+  createSplashWindow();
   createMainWindow();
 
   app.on("activate", () => {

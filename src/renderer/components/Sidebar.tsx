@@ -31,6 +31,13 @@ export function Sidebar({ activeId, onSelect }: SidebarProps): JSX.Element {
           </button>
         ))}
       </nav>
+
+      {/* Fixed brand signature — always visible at the bottom of the
+          sidebar, on every module/page, never scrolls away. */}
+      <div className="sidebar__footer">
+        <span className="sidebar__footer-line" aria-hidden="true" />
+        <span className="sidebar__footer-text">از یک ایده تا یک محصول جهانی؛ Starvent شریک خلق فناوری‌های آینده است</span>
+      </div>
     </aside>
   );
 }

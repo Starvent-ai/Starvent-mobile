@@ -40,3 +40,65 @@ export interface DashboardStat {
   trend?: "up" | "down" | "flat";
   trendLabel?: string;
 }
+
+export interface MobilePriceSourceConfig {
+  url: string;
+  itemSelector: string;
+  nameSelector: string;
+  priceSelector: string;
+  refreshMinutes: number;
+}
+
+export interface MobilePriceItem {
+  name: string;
+  price: number;
+}
+
+export interface MobilePriceListResult {
+  items: MobilePriceItem[];
+  updatedAt: string | null;
+  error: string | null;
+}
+
+export type RepairStatus =
+  | "دریافت شده"
+  | "در حال تعمیر"
+  | "منتظر قطعه"
+  | "تکمیل شده"
+  | "تحویل داده شده";
+
+export type RepairPriority = "عادی" | "فوری" | "بحرانی";
+
+export const REPAIR_STATUSES: RepairStatus[] = [
+  "دریافت شده",
+  "در حال تعمیر",
+  "منتظر قطعه",
+  "تکمیل شده",
+  "تحویل داده شده"
+];
+
+export const REPAIR_PRIORITIES: RepairPriority[] = ["عادی", "فوری", "بحرانی"];
+
+export interface RepairTicket {
+  id: string;
+  deviceModel: string;
+  imei: string;
+  serialNumber: string;
+  /** Device unlock password/pattern — shown once here for the technician's
+   *  reference; kept out of any printed receipt or log output. */
+  devicePassword: string;
+  faultDescription: string;
+  accessoriesReceived: string;
+  partsUsed: string;
+  laborFee: number;
+  status: RepairStatus;
+  priority: RepairPriority;
+  technician: string;
+  customerId: string | null;
+  customerName: string;
+  /** ISO date string (yyyy-mm-dd), estimated delivery date. */
+  deliveryDate: string;
+  /** PNG data URL captured from the signature pad, or null until signed. */
+  customerSignature: string | null;
+  createdAt: string;
+}

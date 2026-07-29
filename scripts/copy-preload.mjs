@@ -5,11 +5,23 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 
-const src = path.join(root, "src/main/preload.cjs");
-const destDir = path.join(root, "dist-electron/preload");
-const dest = path.join(destDir, "index.cjs");
+// tsc only compiles .ts files, so any plain static asset the main
+// process loads at runtime (preload script, splash screen) has to be
+// copied into dist-electron by hand as a post-build step — this script
+// runs right after `tsc -p tsconfig.main.json` in the build:main script.
 
-await mkdir(destDir, { recursive: true });
-await copyFile(src, dest);
+const preloadSrc = path.join(root, "src/main/preload.cjs");
+const preloadDestDir = path.join(root, "dist-electron/preload");
+const preloadDest = path.join(preloadDestDir, "index.cjs");
 
-console.log(`[copy-preload] ${src} -> ${dest}`);
+await mkdir(preloadDestDir, { recursive: true });
+await copyFile(preloadSrc, preloadDest);
+console.log(`[copy-preload] ${preloadSrc} -> ${preloadDest}`);
+
+const splashSrc = path.join(root, "src/main/splash.html");
+const splashDestDir = path.join(root, "dist-electron/main");
+const splashDest = path.join(splashDestDir, "splash.html");
+
+await mkdir(splashDestDir, { recursive: true });
+await copyFile(splashSrc, splashDest);
+console.log(`[copy-preload] ${splashSrc} -> ${splashDest}`);

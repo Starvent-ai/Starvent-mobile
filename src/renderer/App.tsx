@@ -8,6 +8,7 @@ const SUBTITLES: Record<string, string> = {
   inventory: "افزودن و مدیریت کالاهای انبار",
   sales: "ثبت سریع فروش و مشاهدهٔ تاریخچه",
   customers: "مدیریت باشگاه مشتریان",
+  repairs: "ثبت و پیگیری دستگاه‌های در حال تعمیر",
   settings: "پیکربندی هوش مصنوعی و برنامه",
   "ai-suggestions-example": "نمونهٔ افزونهٔ مستقل"
 };

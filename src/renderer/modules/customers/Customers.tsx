@@ -1,8 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { useCustomers } from "./useCustomers";
+import { useSortableRows } from "@/components/useSortableRows";
+import { SortableTh } from "@/components/SortableTh";
+import type { Customer } from "@shared/types";
 
 export function Customers(): JSX.Element {
   const { customers, addCustomer } = useCustomers();
+  const { sorted, sortKey, direction, toggleSort } = useSortableRows<Customer>(customers, "fullName");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -40,14 +44,14 @@ export function Customers(): JSX.Element {
         <table className="data-table">
           <thead>
             <tr>
-              <th>نام</th>
-              <th>شماره تماس</th>
-              <th>سطح باشگاه مشتریان</th>
-              <th>تعداد خرید</th>
+              <SortableTh label="نام" sortKeyName="fullName" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+              <SortableTh label="شماره تماس" sortKeyName="phone" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+              <SortableTh label="سطح باشگاه مشتریان" sortKeyName="loyaltyTier" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+              <SortableTh label="تعداد خرید" sortKeyName="totalPurchases" activeKey={sortKey} direction={direction} onSort={toggleSort} />
             </tr>
           </thead>
           <tbody>
-            {customers.map((c) => (
+            {sorted.map((c) => (
               <tr key={c.id}>
                 <td>{c.fullName}</td>
                 <td>{c.phone}</td>

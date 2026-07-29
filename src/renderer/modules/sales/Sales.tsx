@@ -2,11 +2,15 @@ import { useState, type FormEvent } from "react";
 import { useInventory } from "@/modules/inventory/useInventory";
 import { useCustomers } from "@/modules/customers/useCustomers";
 import { useSales } from "./useSales";
+import { useSortableRows } from "@/components/useSortableRows";
+import { SortableTh } from "@/components/SortableTh";
+import type { SaleRecord } from "@shared/types";
 
 export function Sales(): JSX.Element {
   const { items } = useInventory();
   const { customers } = useCustomers();
   const { sales, recordSale } = useSales();
+  const { sorted, sortKey, direction, toggleSort } = useSortableRows<SaleRecord>(sales, "createdAt", "desc");
 
   const [itemId, setItemId] = useState(items[0]?.id ?? "");
   const [customerId, setCustomerId] = useState("");
@@ -95,26 +99,23 @@ export function Sales(): JSX.Element {
           <table className="data-table">
             <thead>
               <tr>
-                <th>کالا</th>
-                <th>تعداد</th>
-                <th>قیمت واحد</th>
-                <th>مبلغ کل</th>
-                <th>تاریخ</th>
+                <SortableTh label="کالا" sortKeyName="itemName" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+                <SortableTh label="تعداد" sortKeyName="quantity" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+                <SortableTh label="قیمت واحد" sortKeyName="unitPrice" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+                <SortableTh label="مبلغ کل" sortKeyName="total" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+                <SortableTh label="تاریخ" sortKeyName="createdAt" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               </tr>
             </thead>
             <tbody>
-              {sales
-                .slice()
-                .reverse()
-                .map((s) => (
-                  <tr key={s.id}>
-                    <td>{s.itemName}</td>
-                    <td>{s.quantity}</td>
-                    <td>{s.unitPrice.toLocaleString("fa-IR")} تومان</td>
-                    <td>{s.total.toLocaleString("fa-IR")} تومان</td>
-                    <td>{new Date(s.createdAt).toLocaleDateString("fa-IR")}</td>
-                  </tr>
-                ))}
+              {sorted.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.itemName}</td>
+                  <td>{s.quantity}</td>
+                  <td>{s.unitPrice.toLocaleString("fa-IR")} تومان</td>
+                  <td>{s.total.toLocaleString("fa-IR")} تومان</td>
+                  <td>{new Date(s.createdAt).toLocaleDateString("fa-IR")}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}

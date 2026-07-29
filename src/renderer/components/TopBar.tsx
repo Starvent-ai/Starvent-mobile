@@ -1,3 +1,5 @@
+import { DateTimeWidget } from "@/components/DateTimeWidget";
+
 interface TopBarProps {
   title: string;
   subtitle?: string;
@@ -37,6 +39,7 @@ export function TopBar({ title, subtitle }: TopBarProps): JSX.Element {
         <OrbitAccent />
       </div>
       <div className="topbar__meta">
+        <DateTimeWidget />
         <span className="topbar__badge">نسخهٔ ویندوز</span>
       </div>
     </header>

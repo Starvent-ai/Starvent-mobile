@@ -13,5 +13,16 @@ contextBridge.exposeInMainWorld("starvent", {
   settings: {
     get: (key) => ipcRenderer.invoke("settings:get", key),
     set: (key, value) => ipcRenderer.invoke("settings:set", key, value)
+  },
+  mobilePrices: {
+    test: (config) => ipcRenderer.invoke("mobilePrices:test", config),
+    getConfig: () => ipcRenderer.invoke("mobilePrices:getConfig"),
+    saveConfig: (config) => ipcRenderer.invoke("mobilePrices:saveConfig", config),
+    getList: () => ipcRenderer.invoke("mobilePrices:getList"),
+    onUpdated: (callback) => {
+      const handler = (_event, result) => callback(result);
+      ipcRenderer.on("mobilePrices:updated", handler);
+      return () => ipcRenderer.removeListener("mobilePrices:updated", handler);
+    }
   }
 });

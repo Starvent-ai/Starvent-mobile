@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MobilePriceSource } from "./MobilePriceSource";
 
 const PROVIDERS = ["OpenAI", "Claude", "Gemini", "Grok", "OpenRouter", "DeepSeek", "Mistral"] as const;
 type Provider = (typeof PROVIDERS)[number];
@@ -89,11 +90,24 @@ export function Settings(): JSX.Element {
         ) : null}
       </div>
 
+      <MobilePriceSource />
+
       <div className="card" style={{ marginTop: 24 }}>
         <h3 style={{ marginTop: 0 }}>دربارهٔ برنامه</h3>
         <p style={{ color: "var(--sv-text-400)" }}>
           Starvent — نسخه ۰.۱.۰ (فاز اول: ویندوز). معماری Plugin-Based این برنامه امکان افزودن ماژول‌های جدید
           (تعمیرات، اقساط، ضمانت و غیره) را بدون تغییر هستهٔ برنامه فراهم می‌کند.
+        </p>
+        <p
+          style={{
+            color: "var(--sv-gold-300)",
+            borderInlineStart: "2px solid var(--sv-gold-700)",
+            paddingInlineStart: "var(--sv-space-3)",
+            marginBottom: 0
+          }}
+        >
+          آینده را طراحی می‌کند؛ با تلفیق هوش مصنوعی، فناوری و تفکر استراتژیک، ایده‌ها را به محصولات ماندگار
+          تبدیل می‌کنیم.
         </p>
       </div>
     </div>
