@@ -1,4 +1,5 @@
 import { DateTimeWidget } from "@/components/DateTimeWidget";
+import { GlobalSearch } from "@/components/GlobalSearch";
 
 interface TopBarProps {
   title: string;
@@ -37,6 +38,9 @@ export function TopBar({ title, subtitle }: TopBarProps): JSX.Element {
         <h1 className="topbar__title">{title}</h1>
         {subtitle ? <p className="topbar__subtitle">{subtitle}</p> : null}
         <OrbitAccent />
+      </div>
+      <div className="topbar__search-slot">
+        <GlobalSearch />
       </div>
       <div className="topbar__meta">
         <DateTimeWidget />

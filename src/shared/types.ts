@@ -146,3 +146,66 @@ export interface CheckRecord {
   status: "در جریان" | "وصول شده" | "برگشتی";
   createdAt: string;
 }
+
+export interface Warehouse {
+  id: string;
+  name: string;
+  address: string;
+}
+
+/** Stock levels for non-central warehouses. The existing InventoryItem.quantity
+ *  field continues to represent stock in the central warehouse (wh-central) —
+ *  this keeps the existing Inventory/Sales modules untouched. */
+export interface WarehouseStock {
+  warehouseId: string;
+  itemId: string;
+  quantity: number;
+}
+
+export interface StockTransfer {
+  id: string;
+  itemId: string;
+  fromWarehouseId: string;
+  toWarehouseId: string;
+  quantity: number;
+  date: string;
+}
+
+export interface StocktakeEntry {
+  id: string;
+  warehouseId: string;
+  itemId: string;
+  systemQuantity: number;
+  countedQuantity: number;
+  difference: number;
+  note: string;
+  date: string;
+}
+
+export interface StockReservation {
+  id: string;
+  itemId: string;
+  warehouseId: string;
+  customerName: string;
+  quantity: number;
+  status: "رزرو شده" | "لغو شده" | "تحویل شده";
+  createdAt: string;
+}
+
+export interface DefectiveStockEntry {
+  id: string;
+  itemId: string;
+  warehouseId: string;
+  quantity: number;
+  reason: string;
+  date: string;
+}
+
+export interface StockReturnEntry {
+  id: string;
+  itemId: string;
+  quantity: number;
+  reason: string;
+  refunded: boolean;
+  date: string;
+}

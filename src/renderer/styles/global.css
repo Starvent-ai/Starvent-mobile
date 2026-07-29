@@ -319,6 +319,101 @@ button {
   font-weight: 600;
 }
 
+/* ---------- Top bar: global search ---------- */
+
+.topbar__search-slot {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--sv-space-6);
+}
+
+.global-search {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+
+.global-search__input {
+  width: 100%;
+  padding: 9px 14px;
+  font-size: 13px;
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  color: var(--sv-text-100);
+}
+
+.global-search__input:focus {
+  border-color: var(--sv-gold-500);
+}
+
+.global-search__results {
+  position: absolute;
+  top: calc(100% + var(--sv-space-2));
+  right: 0;
+  left: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  z-index: 30;
+}
+
+.global-search__empty {
+  padding: var(--sv-space-4);
+  font-size: 12.5px;
+  color: var(--sv-text-600);
+  text-align: center;
+}
+
+.global-search__result {
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-3);
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--sv-border);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: right;
+}
+
+.global-search__result:last-child {
+  border-bottom: none;
+}
+
+.global-search__result:hover {
+  background: rgba(227, 191, 92, 0.08);
+}
+
+.global-search__result-group {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--sv-gold-300);
+  background: rgba(227, 191, 92, 0.12);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.global-search__result-title {
+  font-size: 13px;
+  color: var(--sv-text-100);
+  flex-shrink: 0;
+}
+
+.global-search__result-subtitle {
+  font-size: 12px;
+  color: var(--sv-text-600);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ---------- Cards ---------- */
 
 .card {
@@ -515,4 +610,48 @@ select:focus {
   color: var(--sv-text-600);
   text-align: center;
   padding: var(--sv-space-8);
+}
+
+/* ---------- Direct print (calculator + reusable by any future module) ----------
+   Two hooks, both supported so nothing that already ships depends on just one:
+   - class="print-area" (or id="calc-print-area") marks the block to print
+   - class="no-print" hides an element even inside a printable block           */
+
+@media print {
+  .sidebar,
+  .topbar {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #calc-print-area,
+  #calc-print-area *,
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  #calc-print-area,
+  .print-area {
+    position: absolute;
+    inset: 0;
+    box-shadow: none;
+    border: none;
+    background: #fff;
+    color: #111;
+    padding: 24px;
+  }
+
+  #calc-print-area .data-table td,
+  .print-area .data-table td {
+    color: #111;
+    border-color: #ccc;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }

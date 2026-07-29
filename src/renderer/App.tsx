@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { TopBar } from "@/components/TopBar";
 import { pluginRegistry } from "@/plugins/pluginRegistry";
+import { useNavigation } from "@/state/navigationStore";
 
 const SUBTITLES: Record<string, string> = {
   dashboard: "نمای کلی فروش، موجودی و مشتریان",
@@ -11,15 +11,18 @@ const SUBTITLES: Record<string, string> = {
   repairs: "ثبت و پیگیری دستگاه‌های در حال تعمیر",
   suppliers: "مدیریت تأمین‌کنندگان و بدهی/بستانکاری",
   accounting: "صندوق، بانک، هزینه‌ها، درآمدها و چک‌ها",
+  calculator: "محاسبهٔ سود، تخفیف، مالیات و اقساط با چاپ مستقیم",
+  warehouse: "چند انبار، انتقال، انبارگردانی، رزرو، معیوب و مرجوعی",
   settings: "پیکربندی هوش مصنوعی و برنامه",
   "ai-suggestions-example": "نمونهٔ افزونهٔ مستقل"
 };
 
 export function App(): JSX.Element {
   const plugins = pluginRegistry.getAll();
-  const [activeId, setActiveId] = useState<string>(plugins[0]?.id ?? "");
+  const { activeId, goTo } = useNavigation();
+  const resolvedActiveId = activeId || plugins[0]?.id || "";
 
-  const activePlugin = pluginRegistry.get(activeId) ?? plugins[0];
+  const activePlugin = pluginRegistry.get(resolvedActiveId) ?? plugins[0];
 
   if (!activePlugin) {
     return (
@@ -37,7 +40,7 @@ export function App(): JSX.Element {
           <ActiveComponent />
         </div>
       </div>
-      <Sidebar activeId={activePlugin.id} onSelect={setActiveId} />
+      <Sidebar activeId={activePlugin.id} onSelect={goTo} />
     </div>
   );
 }

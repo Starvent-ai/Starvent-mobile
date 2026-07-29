@@ -8,5 +8,7 @@ import "@/modules/customers";
 import "@/modules/repairs";
 import "@/modules/suppliers";
 import "@/modules/accounting";
+import "@/modules/calculator";
+import "@/modules/warehouse";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";
