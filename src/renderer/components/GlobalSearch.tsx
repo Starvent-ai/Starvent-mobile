@@ -4,6 +4,8 @@ import { useCustomers } from "@/modules/customers/useCustomers";
 import { useSales } from "@/modules/sales/useSales";
 import { useRepairs } from "@/modules/repairs/useRepairs";
 import { useSuppliers } from "@/modules/suppliers/useSuppliers";
+import { useInstallments } from "@/modules/installments/useInstallments";
+import { useCollateral } from "@/modules/collateral/useCollateral";
 import { navigationActions } from "@/state/navigationStore";
 
 interface SearchResult {
@@ -33,6 +35,8 @@ export function GlobalSearch(): JSX.Element {
   const { sales } = useSales();
   const { tickets } = useRepairs();
   const { suppliers } = useSuppliers();
+  const { contracts } = useInstallments();
+  const { records: collateralRecords } = useCollateral();
 
   const results = useMemo<SearchResult[]>(() => {
     const q = query.trim().toLowerCase();
@@ -100,8 +104,32 @@ export function GlobalSearch(): JSX.Element {
       }
     }
 
+    for (const contract of contracts) {
+      if (matches([contract.customerName, contract.itemDescription], q)) {
+        out.push({
+          id: contract.id,
+          group: "قسط",
+          title: contract.customerName,
+          subtitle: `${contract.itemDescription} — ${contract.status}`,
+          moduleId: "installments"
+        });
+      }
+    }
+
+    for (const record of collateralRecords) {
+      if (matches([record.relatedTo, record.description, record.guarantorName], q)) {
+        out.push({
+          id: record.id,
+          group: "ضمانت",
+          title: record.description,
+          subtitle: `${record.type} — ${record.relatedTo || "بدون ارجاع"}`,
+          moduleId: "collateral"
+        });
+      }
+    }
+
     return out.slice(0, 20);
-  }, [query, items, customers, sales, tickets, suppliers]);
+  }, [query, items, customers, sales, tickets, suppliers, contracts, collateralRecords]);
 
   function goToResult(result: SearchResult): void {
     navigationActions.goTo(result.moduleId);

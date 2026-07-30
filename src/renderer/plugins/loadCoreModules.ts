@@ -10,5 +10,7 @@ import "@/modules/suppliers";
 import "@/modules/accounting";
 import "@/modules/calculator";
 import "@/modules/warehouse";
+import "@/modules/installments";
+import "@/modules/collateral";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";

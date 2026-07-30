@@ -209,3 +209,48 @@ export interface StockReturnEntry {
   refunded: boolean;
   date: string;
 }
+
+export interface InstallmentCompany {
+  id: string;
+  name: string;
+  terms: string;
+}
+
+export type InstallmentContractStatus = "در جریان" | "تسویه شده" | "معوق";
+
+export interface InstallmentContract {
+  id: string;
+  companyId: string | null;
+  customerName: string;
+  itemDescription: string;
+  totalAmount: number;
+  downPayment: number;
+  installmentCount: number;
+  monthlyAmount: number;
+  startDate: string;
+  status: InstallmentContractStatus;
+  guaranteeNote: string;
+  createdAt: string;
+}
+
+export interface InstallmentPayment {
+  id: string;
+  contractId: string;
+  installmentNumber: number;
+  amount: number;
+  date: string;
+}
+
+export type CollateralType = "چک" | "طلا" | "سفته" | "ضامن" | "سایر";
+export type CollateralStatus = "معتبر" | "بازگردانده شده" | "ضبط شده";
+
+export interface CollateralRecord {
+  id: string;
+  type: CollateralType;
+  relatedTo: string;
+  description: string;
+  guarantorName: string;
+  dueDate: string;
+  status: CollateralStatus;
+  createdAt: string;
+}
