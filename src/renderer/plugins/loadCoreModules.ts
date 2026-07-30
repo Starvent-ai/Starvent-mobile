@@ -12,5 +12,6 @@ import "@/modules/calculator";
 import "@/modules/warehouse";
 import "@/modules/installments";
 import "@/modules/collateral";
+import "@/modules/printing";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";

@@ -655,3 +655,20 @@ select:focus {
     display: none !important;
   }
 }
+
+/* ---------- Print header (invoice / repair receipt store header) ---------- */
+
+.print-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-4);
+  padding-bottom: var(--sv-space-4);
+  margin-bottom: var(--sv-space-4);
+  border-bottom: 1px solid var(--sv-border);
+}
+
+.print-header__logo {
+  height: 56px;
+  width: auto;
+  border-radius: 6px;
+}

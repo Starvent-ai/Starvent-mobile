@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MobilePriceSource } from "./MobilePriceSource";
+import { StoreSettings } from "./StoreSettings";
 
 const PROVIDERS = ["OpenAI", "Claude", "Gemini", "Grok", "OpenRouter", "DeepSeek", "Mistral"] as const;
 type Provider = (typeof PROVIDERS)[number];
@@ -89,6 +90,8 @@ export function Settings(): JSX.Element {
           <span style={{ marginInlineStart: 12, color: "var(--sv-success)" }}>ذخیره شد.</span>
         ) : null}
       </div>
+
+      <StoreSettings />
 
       <MobilePriceSource />
 
