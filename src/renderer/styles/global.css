@@ -672,3 +672,18 @@ select:focus {
   width: auto;
   border-radius: 6px;
 }
+
+/* ---------- Prompt preview (prompt builder) ---------- */
+
+.prompt-preview {
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  padding: var(--sv-space-4);
+  color: var(--sv-text-100);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}

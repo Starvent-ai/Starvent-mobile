@@ -254,3 +254,35 @@ export interface CollateralRecord {
   status: CollateralStatus;
   createdAt: string;
 }
+
+export type UserRole = "مدیر" | "صندوقدار" | "تکنسین" | "انباردار";
+
+export interface AppUser {
+  id: string;
+  fullName: string;
+  username: string;
+  /** SHA-256 hex digest — the plain password is never stored or logged. */
+  passwordHash: string;
+  role: UserRole;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface ActivityLogEntry {
+  id: string;
+  timestamp: string;
+  userLabel: string;
+  action: string;
+  details: string;
+  /** "info" for normal activity, "error" for caught application errors. */
+  level: "info" | "error";
+}
+
+export interface SavedPrompt {
+  id: string;
+  topic: string;
+  description: string;
+  targetModel: string;
+  generatedText: string;
+  createdAt: string;
+}

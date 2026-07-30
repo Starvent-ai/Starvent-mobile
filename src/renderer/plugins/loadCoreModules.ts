@@ -13,5 +13,7 @@ import "@/modules/warehouse";
 import "@/modules/installments";
 import "@/modules/collateral";
 import "@/modules/printing";
+import "@/modules/security";
+import "@/modules/promptBuilder";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";
