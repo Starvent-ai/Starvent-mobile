@@ -2,6 +2,7 @@ import type { DashboardStat } from "@shared/types";
 import { useInventory } from "@/modules/inventory/useInventory";
 import { useSales } from "@/modules/sales/useSales";
 import { useCustomers } from "@/modules/customers/useCustomers";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 function buildStats(
   todaySalesTotal: number,
@@ -92,7 +93,7 @@ export function Dashboard(): JSX.Element {
                     <td>{s.itemName}</td>
                     <td>{s.quantity}</td>
                     <td>{s.total.toLocaleString("fa-IR")} تومان</td>
-                    <td>{new Date(s.createdAt).toLocaleDateString("fa-IR")}</td>
+                    <td>{formatDateForDisplay(s.createdAt)}</td>
                   </tr>
                 ))}
             </tbody>

@@ -3,6 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Store from "electron-store";
 import { registerMobilePriceHandlers } from "./mobilePrices.js";
+import { registerSmsHandlers } from "./sms.js";
+import { registerPhoneCaptureHandlers } from "./phoneCapture.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,7 +24,11 @@ const DEV_SERVER_URL = "http://localhost:5173";
 let mainWindow: BrowserWindow | null = null;
 let splashWindow: BrowserWindow | null = null;
 
+const SPLASH_MIN_VISIBLE_MS = 3000;
+let splashShownAt = 0;
+
 function createSplashWindow(): void {
+  splashShownAt = Date.now();
   splashWindow = new BrowserWindow({
     width: 420,
     height: 300,
@@ -65,11 +71,15 @@ function createMainWindow(): void {
   });
 
   mainWindow.once("ready-to-show", () => {
-    // Swap the splash window out for the real window at the same moment,
-    // so there's never a visible gap (blank screen) or overlap (both
-    // windows on screen) between the two.
-    splashWindow?.close();
-    mainWindow?.show();
+    // Splash must stay visible at least SPLASH_MIN_VISIBLE_MS, even if the
+    // main window becomes ready sooner — otherwise it can flash for a
+    // fraction of a second on a fast machine.
+    const elapsed = Date.now() - splashShownAt;
+    const remaining = Math.max(0, SPLASH_MIN_VISIBLE_MS - elapsed);
+    setTimeout(() => {
+      splashWindow?.close();
+      mainWindow?.show();
+    }, remaining);
   });
 
   // Open external links in the user's default browser, not inside the app window.
@@ -97,6 +107,8 @@ ipcMain.handle("settings:set", (_event, key: string, value: unknown) => {
 });
 
 registerMobilePriceHandlers(settingsStore, () => BrowserWindow.getAllWindows());
+registerSmsHandlers(settingsStore);
+registerPhoneCaptureHandlers(settingsStore, () => BrowserWindow.getAllWindows());
 
 app.whenReady().then(() => {
   createSplashWindow();

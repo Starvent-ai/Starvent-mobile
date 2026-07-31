@@ -3,6 +3,7 @@ import { useAccounting } from "./useAccounting";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { AccountingCategory, CashTransaction, CheckRecord } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 const CATEGORIES: AccountingCategory[] = ["فروش", "خرید کالا", "اجاره", "حقوق", "قبوض", "سایر"];
 
@@ -112,7 +113,7 @@ export function Accounting(): JSX.Element {
           <tbody>
             {sortedTxns.map((t) => (
               <tr key={t.id}>
-                <td>{t.date}</td>
+                <td>{formatDateForDisplay(t.date)}</td>
                 <td className={t.type === "هزینه" ? "data-table__low-stock" : undefined}>{t.type}</td>
                 <td>{t.account}</td>
                 <td>{t.category}</td>
@@ -170,7 +171,7 @@ export function Accounting(): JSX.Element {
                   <td>{c.direction}</td>
                   <td>{c.payerOrPayee}</td>
                   <td>{c.amount.toLocaleString("fa-IR")}</td>
-                  <td>{c.dueDate}</td>
+                  <td>{formatDateForDisplay(c.dueDate)}</td>
                   <td>
                     <select value={c.status} onChange={(e) => updateCheckStatus(c.id, e.target.value as CheckRecord["status"])}>
                       <option value="در جریان">در جریان</option>

@@ -3,6 +3,7 @@ import { useSuppliers } from "./useSuppliers";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { Supplier } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 export function Suppliers(): JSX.Element {
   const { suppliers, purchases, createSupplier, recordPurchase, settleBalance, setRating } = useSuppliers();
@@ -64,7 +65,13 @@ export function Suppliers(): JSX.Element {
             </div>
             <div>
               <label htmlFor="sup-phone">تلفن</label>
-              <input id="sup-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <input
+                id="sup-phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                inputMode="numeric"
+                maxLength={11}
+              />
             </div>
             <div>
               <label htmlFor="sup-address">آدرس</label>
@@ -164,7 +171,7 @@ export function Suppliers(): JSX.Element {
             <tbody>
               {purchases.map((p) => (
                 <tr key={p.id}>
-                  <td>{p.date}</td>
+                  <td>{formatDateForDisplay(p.date)}</td>
                   <td>{suppliers.find((s) => s.id === p.supplierId)?.name ?? "—"}</td>
                   <td>{p.itemDescription}</td>
                   <td>{p.amount.toLocaleString("fa-IR")}</td>

@@ -4,6 +4,7 @@ import { useCustomers } from "@/modules/customers/useCustomers";
 import { useRepairs } from "@/modules/repairs/useRepairs";
 import { DEFAULT_STORE_PROFILE, loadStoreProfile, type StoreProfile } from "@/lib/storeProfile";
 import type { RepairTicket, SaleRecord } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 type DocType = "invoice" | "repair-receipt";
 
@@ -57,7 +58,7 @@ export function Printing(): JSX.Element {
                 <option value="">— انتخاب کنید —</option>
                 {sales.map((s) => (
                   <option key={s.id} value={s.id}>
-                    {s.itemName} — {s.total.toLocaleString("fa-IR")} تومان ({s.createdAt.slice(0, 10)})
+                    {s.itemName} — {s.total.toLocaleString("fa-IR")} تومان ({formatDateForDisplay(s.createdAt)})
                   </option>
                 ))}
               </select>
@@ -128,7 +129,7 @@ function InvoiceBody({ sale, customerName }: { sale: SaleRecord; customerName: s
   return (
     <div>
       <h3>فاکتور فروش</h3>
-      <p>تاریخ: {sale.createdAt.slice(0, 10)}</p>
+      <p>تاریخ: {formatDateForDisplay(sale.createdAt)}</p>
       {customerName ? <p>مشتری: {customerName}</p> : null}
       <table className="data-table">
         <thead>
@@ -157,7 +158,7 @@ function RepairReceiptBody({ ticket }: { ticket: RepairTicket }): JSX.Element {
   return (
     <div>
       <h3>رسید تعمیر</h3>
-      <p>تاریخ ثبت: {ticket.createdAt.slice(0, 10)}</p>
+      <p>تاریخ ثبت: {formatDateForDisplay(ticket.createdAt)}</p>
       <p>مشتری: {ticket.customerName || "—"}</p>
       <table className="data-table">
         <tbody>
@@ -187,7 +188,7 @@ function RepairReceiptBody({ ticket }: { ticket: RepairTicket }): JSX.Element {
           </tr>
           <tr>
             <td>تاریخ تحویل تخمینی</td>
-            <td>{ticket.deliveryDate}</td>
+            <td>{formatDateForDisplay(ticket.deliveryDate)}</td>
           </tr>
           {ticket.partsUsed || ticket.laborFee > 0 ? (
             <tr>

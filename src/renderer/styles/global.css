@@ -66,6 +66,7 @@ button {
   flex: 1;
   overflow-y: auto;
   padding: var(--sv-space-8);
+  padding-bottom: 50vh;
 }
 
 /* ---------- Sidebar ---------- */
@@ -76,6 +77,8 @@ button {
   display: flex;
   flex-direction: column;
   padding: var(--sv-space-6) var(--sv-space-4);
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar__brand {
@@ -103,6 +106,23 @@ button {
   display: flex;
   flex-direction: column;
   gap: var(--sv-space-1);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Slim, unobtrusive scrollbar — matches the dark premium theme instead of
+   the OS default. */
+.sidebar__nav::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar__nav::-webkit-scrollbar-thumb {
+  background: var(--sv-border-strong);
+  border-radius: 3px;
+}
+.sidebar__nav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .sidebar__link {
@@ -213,10 +233,12 @@ button {
   color: var(--sv-gold-300);
 }
 
-/* ---------- Top bar: Jalali clock + date converter ---------- */
+/* ---------- Top bar: Jalali clock + always-visible date converter ---------- */
 
 .date-widget {
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sv-space-3);
 }
 
 .date-widget__clock {
@@ -228,13 +250,6 @@ button {
   border: 1px solid var(--sv-border);
   border-radius: var(--sv-radius-sm);
   padding: 6px 12px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: border-color 160ms var(--sv-ease);
-}
-
-.date-widget__clock:hover {
-  border-color: var(--sv-gold-500);
 }
 
 .date-widget__date {
@@ -248,75 +263,55 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
-.date-widget__popover {
-  position: absolute;
-  top: calc(100% + var(--sv-space-2));
-  left: 0;
-  width: 320px;
-  z-index: 20;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-}
-
-.date-widget__popover-header {
+.date-widget__converter {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--sv-space-3);
-}
-
-.date-widget__popover-header h4 {
-  margin: 0;
-  font-size: 13.5px;
-  color: var(--sv-text-100);
-}
-
-.date-widget__close {
-  background: transparent;
-  border: none;
-  color: var(--sv-text-600);
-  cursor: pointer;
-  font-size: 13px;
-  padding: 2px 6px;
-}
-
-.date-widget__close:hover {
-  color: var(--sv-text-100);
-}
-
-.date-widget__converter-row {
-  padding: var(--sv-space-3) 0;
-  border-top: 1px solid var(--sv-border);
-}
-
-.date-widget__converter-row:first-of-type {
-  border-top: none;
-  padding-top: 0;
-}
-
-.date-widget__converter-label {
-  display: block;
-  font-size: 12px;
-  color: var(--sv-text-600);
-  margin-bottom: var(--sv-space-2);
-}
-
-.date-widget__inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.4fr;
   gap: var(--sv-space-2);
+  background: var(--sv-surface-raised);
+  border: 1px solid var(--sv-border);
+  border-radius: var(--sv-radius-sm);
+  padding: 6px 10px;
 }
 
-.date-widget__inputs input,
-.date-widget__inputs select {
-  padding: 7px 8px;
-  font-size: 12.5px;
+.date-widget__flip {
+  background: transparent;
+  border: 1px solid var(--sv-border-strong);
+  border-radius: var(--sv-radius-sm);
+  color: var(--sv-gold-300);
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.date-widget__flip:hover {
+  border-color: var(--sv-gold-500);
+}
+
+.date-widget__date-input {
+  padding: 5px 6px;
+  font-size: 12px;
+  width: 132px;
+}
+
+.date-widget__jalali-inputs {
+  display: flex;
+  gap: 4px;
+}
+
+.date-widget__jalali-inputs input {
+  padding: 5px 4px;
+  font-size: 12px;
+  width: 44px;
+  text-align: center;
 }
 
 .date-widget__result {
-  margin-top: var(--sv-space-2);
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--sv-gold-300);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ---------- Top bar: global search ---------- */
@@ -486,6 +481,7 @@ button {
 }
 
 .data-table td {
+  text-align: right;
   padding: var(--sv-space-3);
   border-bottom: 1px solid var(--sv-border);
   color: var(--sv-text-100);
@@ -517,7 +513,11 @@ button {
 .data-table__sortable-th-inner {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  /* This app is RTL (dir="rtl"): flex-start resolves to the right edge,
+     matching the plain `text-align: right` used by non-sortable <th>/<td>
+     cells. Using flex-end here previously pushed sortable headers to the
+     left, so they didn't line up with the column data underneath. */
+  justify-content: flex-start;
   gap: var(--sv-space-1);
 }
 
@@ -545,7 +545,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   width: 100%;
   background: var(--sv-surface-raised);
   border: 1px solid var(--sv-border);
@@ -557,7 +558,8 @@ select {
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: var(--sv-gold-500);
 }
 

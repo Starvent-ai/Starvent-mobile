@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { gregorianToJalali, isLeapJalaliYear, jalaliToGregorian, jalaliMonthLength } from "@/lib/jalali";
+import { gregorianToJalali, isLeapJalaliYear, jalaliToGregorian, jalaliMonthLength, formatDateForDisplay } from "@/lib/jalali";
 
 describe("jalali conversion", () => {
   it("converts known reference dates correctly", () => {
@@ -24,5 +24,15 @@ describe("jalali conversion", () => {
     expect(jalaliMonthLength(1403, 1)).toBe(31);
     expect(jalaliMonthLength(1403, 10)).toBe(30);
     expect(jalaliMonthLength(1403, 12)).toBe(isLeapJalaliYear(1403) ? 30 : 29);
+  });
+
+  it("formats both plain dates and full ISO timestamps for display", () => {
+    expect(formatDateForDisplay("2024-03-20")).toBe("۱ فروردین ۱۴۰۳");
+    expect(formatDateForDisplay("2024-03-20T14:30:00.000Z")).toBe("۱ فروردین ۱۴۰۳");
+  });
+
+  it("returns unparseable input unchanged instead of throwing", () => {
+    expect(formatDateForDisplay("")).toBe("");
+    expect(formatDateForDisplay("not-a-date")).toBe("not-a-date");
   });
 });

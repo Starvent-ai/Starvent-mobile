@@ -3,6 +3,7 @@ import { CENTRAL_WAREHOUSE_ID, useWarehouse } from "./useWarehouse";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { StockReservation } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 export function WarehouseModule(): JSX.Element {
   const {
@@ -249,7 +250,7 @@ export function WarehouseModule(): JSX.Element {
             <tbody>
               {transfers.map((t) => (
                 <tr key={t.id}>
-                  <td>{t.date}</td>
+                  <td>{formatDateForDisplay(t.date)}</td>
                   <td>{itemName(t.itemId)}</td>
                   <td>{warehouseName_(t.fromWarehouseId)}</td>
                   <td>{warehouseName_(t.toWarehouseId)}</td>
@@ -315,7 +316,7 @@ export function WarehouseModule(): JSX.Element {
             <tbody>
               {stocktakes.map((s) => (
                 <tr key={s.id}>
-                  <td>{s.date}</td>
+                  <td>{formatDateForDisplay(s.date)}</td>
                   <td>{warehouseName_(s.warehouseId)}</td>
                   <td>{itemName(s.itemId)}</td>
                   <td>{s.systemQuantity}</td>
@@ -450,7 +451,7 @@ export function WarehouseModule(): JSX.Element {
             <tbody>
               {defective.map((d) => (
                 <tr key={d.id}>
-                  <td>{d.date}</td>
+                  <td>{formatDateForDisplay(d.date)}</td>
                   <td>{itemName(d.itemId)}</td>
                   <td>{warehouseName_(d.warehouseId)}</td>
                   <td>{d.quantity}</td>
@@ -512,7 +513,7 @@ export function WarehouseModule(): JSX.Element {
             <tbody>
               {returns.map((r) => (
                 <tr key={r.id}>
-                  <td>{r.date}</td>
+                  <td>{formatDateForDisplay(r.date)}</td>
                   <td>{itemName(r.itemId)}</td>
                   <td>{r.quantity}</td>
                   <td>{r.reason}</td>

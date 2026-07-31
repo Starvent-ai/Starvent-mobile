@@ -56,10 +56,28 @@ function adjustQuantity(itemId: string, delta: number): void {
   }));
 }
 
+function updateItem(itemId: string, updates: Partial<Omit<InventoryItem, "id">>): void {
+  inventoryStore.setState((prev) => ({
+    items: prev.items.map((item) => (item.id === itemId ? { ...item, ...updates } : item))
+  }));
+}
+
+function deleteItem(itemId: string): void {
+  inventoryStore.setState((prev) => ({
+    items: prev.items.filter((item) => item.id !== itemId)
+  }));
+}
+
 export function useInventory() {
   const state = inventoryStore.useStore();
-  return { items: state.items, addItem, adjustQuantity };
+  return { items: state.items, addItem, adjustQuantity, updateItem, deleteItem };
 }
 
 // Exposed for direct, non-hook access (e.g. from other module hooks like Sales).
-export const inventoryActions = { addItem, adjustQuantity, getState: inventoryStore.getState };
+export const inventoryActions = {
+  addItem,
+  adjustQuantity,
+  updateItem,
+  deleteItem,
+  getState: inventoryStore.getState
+};

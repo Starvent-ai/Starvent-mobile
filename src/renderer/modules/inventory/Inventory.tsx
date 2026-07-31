@@ -5,8 +5,18 @@ import { SortableTh } from "@/components/SortableTh";
 import { useMobilePriceList } from "@/state/useMobilePriceList";
 import type { InventoryItem } from "@shared/types";
 
+const CATEGORIES = ["موبایل", "تبلت", "ساعت هوشمند", "هدفون", "پاوربانک", "قاب", "قطعات تعمیرات"];
+
+interface EditableFields {
+  name: string;
+  category: string;
+  sku: string;
+  quantity: string;
+  salePrice: string;
+}
+
 export function Inventory(): JSX.Element {
-  const { items, addItem } = useInventory();
+  const { items, addItem, updateItem, deleteItem } = useInventory();
   const { sorted, sortKey, direction, toggleSort } = useSortableRows<InventoryItem>(items, "name");
   const { items: livePrices } = useMobilePriceList();
   const [name, setName] = useState("");
@@ -15,13 +25,18 @@ export function Inventory(): JSX.Element {
   const [quantity, setQuantity] = useState("1");
   const [salePrice, setSalePrice] = useState("");
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editFields, setEditFields] = useState<EditableFields>({
+    name: "",
+    category: "موبایل",
+    sku: "",
+    quantity: "0",
+    salePrice: "0"
+  });
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   function handleNameChange(value: string): void {
     setName(value);
-    // If the typed/picked name exactly matches a live-fetched price (see
-    // the datalist below), auto-fill the sale price too — this is the
-    // "don't retype the price by hand" shortcut from the reference-site
-    // scraper in Settings. An exact match only: partial typing shouldn't
-    // silently overwrite whatever the shopkeeper already entered.
     const match = livePrices.find((p) => p.name === value);
     if (match) {
       setSalePrice(String(match.price));
@@ -46,6 +61,43 @@ export function Inventory(): JSX.Element {
     setSku("");
     setQuantity("1");
     setSalePrice("");
+  }
+
+  function startEdit(item: InventoryItem): void {
+    setEditingId(item.id);
+    setEditFields({
+      name: item.name,
+      category: item.category,
+      sku: item.sku,
+      quantity: String(item.quantity),
+      salePrice: String(item.salePrice)
+    });
+    setConfirmDeleteId(null);
+  }
+
+  function cancelEdit(): void {
+    setEditingId(null);
+  }
+
+  function saveEdit(itemId: string): void {
+    if (!editFields.name.trim() || !editFields.sku.trim()) return;
+    updateItem(itemId, {
+      name: editFields.name.trim(),
+      category: editFields.category,
+      sku: editFields.sku.trim(),
+      quantity: Number(editFields.quantity) || 0,
+      salePrice: Number(editFields.salePrice) || 0
+    });
+    setEditingId(null);
+  }
+
+  function handleDeleteClick(itemId: string): void {
+    if (confirmDeleteId === itemId) {
+      deleteItem(itemId);
+      setConfirmDeleteId(null);
+    } else {
+      setConfirmDeleteId(itemId);
+    }
   }
 
   return (
@@ -76,13 +128,9 @@ export function Inventory(): JSX.Element {
             <div>
               <label htmlFor="item-category">دسته‌بندی</label>
               <select id="item-category" value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option>موبایل</option>
-                <option>تبلت</option>
-                <option>ساعت هوشمند</option>
-                <option>هدفون</option>
-                <option>پاوربانک</option>
-                <option>قاب</option>
-                <option>قطعات تعمیرات</option>
+                {CATEGORIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
               </select>
             </div>
             <div>
@@ -114,21 +162,80 @@ export function Inventory(): JSX.Element {
               <SortableTh label="کد کالا" sortKeyName="sku" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <SortableTh label="موجودی" sortKeyName="quantity" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <SortableTh label="قیمت فروش" sortKeyName="salePrice" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+              <th>عملیات</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map((item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
-                <td>{item.sku}</td>
-                <td className={item.quantity <= item.lowStockThreshold ? "data-table__low-stock" : undefined}>
-                  {item.quantity}
-                  {item.quantity <= item.lowStockThreshold ? " (کمبود موجودی)" : ""}
-                </td>
-                <td>{item.salePrice.toLocaleString("fa-IR")} تومان</td>
-              </tr>
-            ))}
+            {sorted.map((item) =>
+              editingId === item.id ? (
+                <tr key={item.id}>
+                  <td>
+                    <input value={editFields.name} onChange={(e) => setEditFields((f) => ({ ...f, name: e.target.value }))} />
+                  </td>
+                  <td>
+                    <select
+                      value={editFields.category}
+                      onChange={(e) => setEditFields((f) => ({ ...f, category: e.target.value }))}
+                    >
+                      {CATEGORIES.map((c) => (
+                        <option key={c}>{c}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <input value={editFields.sku} onChange={(e) => setEditFields((f) => ({ ...f, sku: e.target.value }))} />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={0}
+                      value={editFields.quantity}
+                      onChange={(e) => setEditFields((f) => ({ ...f, quantity: e.target.value }))}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={0}
+                      value={editFields.salePrice}
+                      onChange={(e) => setEditFields((f) => ({ ...f, salePrice: e.target.value }))}
+                    />
+                  </td>
+                  <td style={{ display: "flex", gap: 8 }}>
+                    <button type="button" className="btn-primary" onClick={() => saveEdit(item.id)}>
+                      ذخیره
+                    </button>
+                    <button type="button" className="btn-secondary" onClick={cancelEdit}>
+                      انصراف
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                <tr key={item.id}>
+                  <td>{item.name}</td>
+                  <td>{item.category}</td>
+                  <td>{item.sku}</td>
+                  <td className={item.quantity <= item.lowStockThreshold ? "data-table__low-stock" : undefined}>
+                    {item.quantity}
+                    {item.quantity <= item.lowStockThreshold ? " (کمبود موجودی)" : ""}
+                  </td>
+                  <td>{item.salePrice.toLocaleString("fa-IR")} تومان</td>
+                  <td style={{ display: "flex", gap: 8 }}>
+                    <button type="button" className="btn-secondary" onClick={() => startEdit(item)}>
+                      ویرایش
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      style={confirmDeleteId === item.id ? { borderColor: "var(--sv-warning)", color: "var(--sv-warning)" } : undefined}
+                      onClick={() => handleDeleteClick(item.id)}
+                    >
+                      {confirmDeleteId === item.id ? "مطمئن هستید؟ حذف" : "حذف"}
+                    </button>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>

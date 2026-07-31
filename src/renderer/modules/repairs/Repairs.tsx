@@ -5,6 +5,7 @@ import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import { SignaturePad } from "@/components/SignaturePad";
 import { REPAIR_PRIORITIES, REPAIR_STATUSES, type RepairPriority, type RepairTicket } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 export function Repairs(): JSX.Element {
   const { tickets, createTicket, updateStatus, updatePartsAndLabor, setSignature } = useRepairs();
@@ -193,7 +194,7 @@ export function Repairs(): JSX.Element {
                   </select>
                 </td>
                 <td>{ticket.technician || "—"}</td>
-                <td>{ticket.deliveryDate}</td>
+                <td>{formatDateForDisplay(ticket.deliveryDate)}</td>
                 <td>
                   <button type="button" className="btn-secondary" onClick={() => openDetails(ticket)}>
                     مشاهده

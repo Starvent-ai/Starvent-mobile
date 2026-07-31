@@ -44,7 +44,6 @@ export function TopBar({ title, subtitle }: TopBarProps): JSX.Element {
       </div>
       <div className="topbar__meta">
         <DateTimeWidget />
-        <span className="topbar__badge">نسخهٔ ویندوز</span>
       </div>
     </header>
   );

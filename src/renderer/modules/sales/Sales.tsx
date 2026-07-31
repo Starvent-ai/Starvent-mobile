@@ -4,6 +4,7 @@ import { useCustomers } from "@/modules/customers/useCustomers";
 import { useSales } from "./useSales";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
+import { formatDateForDisplay } from "@/lib/jalali";
 import type { SaleRecord } from "@shared/types";
 
 export function Sales(): JSX.Element {
@@ -113,7 +114,7 @@ export function Sales(): JSX.Element {
                   <td>{s.quantity}</td>
                   <td>{s.unitPrice.toLocaleString("fa-IR")} تومان</td>
                   <td>{s.total.toLocaleString("fa-IR")} تومان</td>
-                  <td>{new Date(s.createdAt).toLocaleDateString("fa-IR")}</td>
+                  <td>{formatDateForDisplay(s.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

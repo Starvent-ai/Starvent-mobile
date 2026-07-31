@@ -14,12 +14,17 @@ export interface InventoryItem {
   lowStockThreshold: number;
 }
 
+export type LoyaltyTier = "عادی" | "نقره‌ای" | "طلایی" | "ویژه";
+
 export interface Customer {
   id: string;
   fullName: string;
   phone: string;
-  loyaltyTier: "عادی" | "نقره‌ای" | "طلایی" | "ویژه";
+  loyaltyTier: LoyaltyTier;
   totalPurchases: number;
+  /** Month and day only (MM-DD) — no year, so this never becomes a stored
+   *  date of birth. Used only to trigger a yearly birthday-SMS reminder. */
+  birthdayMonthDay?: string;
 }
 
 export interface SaleRecord {
@@ -285,4 +290,72 @@ export interface SavedPrompt {
   targetModel: string;
   generatedText: string;
   createdAt: string;
+}
+
+export type SmsTemplateCategory =
+  | "دستگاه آماده"
+  | "کالا موجود شد"
+  | "تبریک تولد"
+  | "یادآوری قسط"
+  | "یادآوری چک"
+  | "کمپین تبلیغاتی"
+  | "سایر";
+
+export const SMS_TEMPLATE_CATEGORIES: SmsTemplateCategory[] = [
+  "دستگاه آماده",
+  "کالا موجود شد",
+  "تبریک تولد",
+  "یادآوری قسط",
+  "یادآوری چک",
+  "کمپین تبلیغاتی",
+  "سایر"
+];
+
+export interface SmsTemplate {
+  id: string;
+  category: SmsTemplateCategory;
+  title: string;
+  /** May contain placeholders: {نام_مشتری} {نام_کالا} {مبلغ} {تاریخ} {نام_فروشگاه} */
+  body: string;
+  createdAt: string;
+}
+
+export interface SmsLogEntry {
+  id: string;
+  phone: string;
+  message: string;
+  status: "ارسال شد" | "ناموفق" | "شبیه‌سازی (بدون تنظیمات پنل)";
+  errorDetail: string | null;
+  templateId: string | null;
+  createdAt: string;
+}
+
+export interface SmsGatewayParam {
+  id: string;
+  /** The field/query-param name the SMS panel expects, e.g. "apikey". */
+  key: string;
+  /** May contain placeholders: {phone} {message} {sender} {apikey} */
+  valueTemplate: string;
+}
+
+export interface SmsGatewayConfig {
+  endpoint: string;
+  method: "GET" | "POST";
+  apiKey: string;
+  senderNumber: string;
+  params: SmsGatewayParam[];
+}
+
+export interface IncomingPhoneCapture {
+  id: string;
+  phone: string;
+  matchedCustomerId: string | null;
+  source: "دستگاه (کیبورد)" | "شبکه";
+  handled: boolean;
+  receivedAt: string;
+}
+
+export interface PhoneCaptureConfig {
+  networkListenerEnabled: boolean;
+  port: number;
 }

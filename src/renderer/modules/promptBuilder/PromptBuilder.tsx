@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { buildPromptText, usePromptBuilder } from "./usePromptBuilder";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 const MODELS = ["OpenAI", "Claude", "Gemini", "Grok", "OpenRouter", "DeepSeek", "Mistral"] as const;
 
@@ -132,7 +133,7 @@ export function PromptBuilder(): JSX.Element {
                 <tr key={p.id}>
                   <td>{p.topic}</td>
                   <td>{p.targetModel}</td>
-                  <td>{p.createdAt.slice(0, 10)}</td>
+                  <td>{formatDateForDisplay(p.createdAt)}</td>
                   <td style={{ display: "flex", gap: "var(--sv-space-2)" }}>
                     <button type="button" className="btn-secondary" onClick={() => handleEdit(p.id)}>
                       ویرایش

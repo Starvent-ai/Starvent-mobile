@@ -3,6 +3,7 @@ import { useCollateral } from "./useCollateral";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { CollateralRecord, CollateralStatus, CollateralType } from "@shared/types";
+import { formatDateForDisplay } from "@/lib/jalali";
 
 const TYPES: CollateralType[] = ["چک", "طلا", "سفته", "ضامن", "سایر"];
 
@@ -100,7 +101,7 @@ export function Collateral(): JSX.Element {
                 <td>{record.type}</td>
                 <td>{record.relatedTo || "—"}</td>
                 <td>{record.guarantorName || "—"}</td>
-                <td className={isNearDue(record) ? "data-table__low-stock" : undefined}>{record.dueDate}</td>
+                <td className={isNearDue(record) ? "data-table__low-stock" : undefined}>{formatDateForDisplay(record.dueDate)}</td>
                 <td>
                   <select
                     value={record.status}

@@ -30,13 +30,27 @@ function incrementPurchases(customerId: string): void {
   }));
 }
 
+function updateCustomer(customerId: string, updates: Partial<Omit<Customer, "id">>): void {
+  customersStore.setState((prev) => ({
+    customers: prev.customers.map((c) => (c.id === customerId ? { ...c, ...updates } : c))
+  }));
+}
+
+function deleteCustomer(customerId: string): void {
+  customersStore.setState((prev) => ({
+    customers: prev.customers.filter((c) => c.id !== customerId)
+  }));
+}
+
 export function useCustomers() {
   const state = customersStore.useStore();
-  return { customers: state.customers, addCustomer };
+  return { customers: state.customers, addCustomer, updateCustomer, deleteCustomer };
 }
 
 export const customerActions = {
   addCustomer,
   incrementPurchases,
+  updateCustomer,
+  deleteCustomer,
   getState: customersStore.getState
 };

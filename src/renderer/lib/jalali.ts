@@ -186,3 +186,28 @@ export function getJalaliDateTime(date: Date = new Date()): JalaliDateTime {
 export function formatGregorian(gy: number, gm: number, gd: number): string {
   return `${gd} ${GREGORIAN_MONTH_NAMES_FA[gm - 1]} (ماه ${gm}) ${gy}`;
 }
+
+/**
+ * Converts any stored ISO date/datetime string (yyyy-mm-dd, or a full
+ * ISO timestamp from `new Date().toISOString()`) to a compact Jalali
+ * display string, e.g. "۵ مرداد ۱۴۰۵". This is the single conversion
+ * point every module uses to show a date to the user — records
+ * themselves keep storing plain ISO/Gregorian strings internally
+ * (sorting, `<input type="date">`, and date arithmetic all still rely
+ * on that), only the on-screen text changes.
+ * Falls back to returning the original string unchanged if it isn't a
+ * parseable date, rather than showing "NaN" or throwing.
+ */
+export function formatDateForDisplay(isoDateOrDateTime: string): string {
+  if (!isoDateOrDateTime) return isoDateOrDateTime;
+  const datePart = isoDateOrDateTime.slice(0, 10);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datePart);
+  if (!match) return isoDateOrDateTime;
+  const [, y, m, d] = match;
+  try {
+    const [jy, jm, jd] = gregorianToJalali(Number(y), Number(m), Number(d));
+    return toPersianDigits(`${jd} ${JALALI_MONTH_NAMES[jm - 1]} ${jy}`);
+  } catch {
+    return isoDateOrDateTime;
+  }
+}

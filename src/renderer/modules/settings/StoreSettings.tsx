@@ -61,7 +61,13 @@ export function StoreSettings(): JSX.Element {
         </div>
         <div>
           <label htmlFor="ss-phone">تلفن</label>
-          <input id="ss-phone" value={profile.phone} onChange={(e) => update("phone", e.target.value)} />
+          <input
+            id="ss-phone"
+            value={profile.phone}
+            onChange={(e) => update("phone", e.target.value.replace(/\D/g, "").slice(0, 11))}
+            inputMode="numeric"
+            maxLength={11}
+          />
         </div>
         <div>
           <label htmlFor="ss-tax">اطلاعات مالیاتی (شناسهٔ اقتصادی)</label>

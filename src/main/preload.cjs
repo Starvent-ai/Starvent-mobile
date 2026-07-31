@@ -24,5 +24,19 @@ contextBridge.exposeInMainWorld("starvent", {
       ipcRenderer.on("mobilePrices:updated", handler);
       return () => ipcRenderer.removeListener("mobilePrices:updated", handler);
     }
+  },
+  sms: {
+    getConfig: () => ipcRenderer.invoke("sms:getConfig"),
+    saveConfig: (config) => ipcRenderer.invoke("sms:saveConfig", config),
+    send: (config, phone, message) => ipcRenderer.invoke("sms:send", config, phone, message)
+  },
+  phoneCapture: {
+    getConfig: () => ipcRenderer.invoke("phoneCapture:getConfig"),
+    saveConfig: (config) => ipcRenderer.invoke("phoneCapture:saveConfig", config),
+    onReceived: (callback) => {
+      const handler = (_event, phone) => callback(phone);
+      ipcRenderer.on("phoneCapture:received", handler);
+      return () => ipcRenderer.removeListener("phoneCapture:received", handler);
+    }
   }
 });

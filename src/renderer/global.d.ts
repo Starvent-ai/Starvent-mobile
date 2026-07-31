@@ -1,6 +1,11 @@
 export {};
 
-import type { MobilePriceListResult, MobilePriceSourceConfig } from "@shared/types";
+import type {
+  MobilePriceListResult,
+  MobilePriceSourceConfig,
+  SmsGatewayConfig,
+  PhoneCaptureConfig
+} from "@shared/types";
 
 declare global {
   interface Window {
@@ -19,6 +24,16 @@ declare global {
         saveConfig: (config: MobilePriceSourceConfig) => Promise<boolean>;
         getList: () => Promise<MobilePriceListResult>;
         onUpdated: (callback: (result: MobilePriceListResult) => void) => () => void;
+      };
+      sms: {
+        getConfig: () => Promise<SmsGatewayConfig | null>;
+        saveConfig: (config: SmsGatewayConfig) => Promise<boolean>;
+        send: (config: SmsGatewayConfig, phone: string, message: string) => Promise<{ ok: boolean; error: string | null }>;
+      };
+      phoneCapture: {
+        getConfig: () => Promise<PhoneCaptureConfig>;
+        saveConfig: (config: PhoneCaptureConfig) => Promise<boolean>;
+        onReceived: (callback: (phone: string) => void) => () => void;
       };
     };
   }
