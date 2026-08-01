@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "calculator",
   label: "ماشین‌حساب",
   icon: "🧮",
-  order: 7,
+  order: 11,
   component: Calculator
 });

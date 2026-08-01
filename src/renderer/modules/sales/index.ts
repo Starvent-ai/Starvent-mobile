@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "sales",
   label: "فروش",
   icon: "◈",
-  order: 2,
+  order: 1,
   component: Sales
 });

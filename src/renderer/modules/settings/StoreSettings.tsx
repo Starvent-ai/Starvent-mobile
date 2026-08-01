@@ -100,6 +100,24 @@ export function StoreSettings(): JSX.Element {
         ) : null}
       </div>
 
+      <h3 style={{ marginTop: "var(--sv-space-6)" }}>تنظیمات محاسبات</h3>
+      <p style={{ color: "var(--sv-text-600)", marginTop: 0 }}>
+        این درصد به‌صورت پیش‌فرض در «ماشین‌حساب» پر می‌شود — خود ماشین‌حساب فقط محاسبه می‌کند، عدد پایه از
+        همین‌جا می‌آید.
+      </p>
+      <div className="form-row">
+        <div>
+          <label htmlFor="ss-default-tax">درصد مالیات پیش‌فرض</label>
+          <input
+            id="ss-default-tax"
+            type="number"
+            min={0}
+            value={profile.defaultTaxPercent}
+            onChange={(e) => update("defaultTaxPercent", Number(e.target.value) || 0)}
+          />
+        </div>
+      </div>
+
       <h3 style={{ marginTop: "var(--sv-space-6)" }}>تنظیمات پرینتر</h3>
       <div className="form-row">
         <div>

@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "repairs",
   label: "تعمیرات",
   icon: "🛠",
-  order: 4,
+  order: 2,
   component: Repairs
 });

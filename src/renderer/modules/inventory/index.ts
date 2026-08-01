@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "inventory",
   label: "مدیریت کالا",
   icon: "▤",
-  order: 1,
+  order: 4,
   component: Inventory
 });

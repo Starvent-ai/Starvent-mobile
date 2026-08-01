@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { TopBar } from "@/components/TopBar";
 import { pluginRegistry } from "@/plugins/pluginRegistry";
@@ -6,6 +7,7 @@ import { useNavigation } from "@/state/navigationStore";
 const SUBTITLES: Record<string, string> = {
   dashboard: "نمای کلی فروش، موجودی و مشتریان",
   inventory: "افزودن و مدیریت کالاهای انبار",
+  "live-prices": "قیمت لحظه‌ای موبایل و تبلت از سایت مرجع",
   sales: "ثبت سریع فروش و مشاهدهٔ تاریخچه",
   customers: "مدیریت باشگاه مشتریان",
   repairs: "ثبت و پیگیری دستگاه‌های در حال تعمیر",
@@ -37,12 +39,17 @@ export function App(): JSX.Element {
   }
 
   const ActiveComponent = activePlugin.component;
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 });
+  }, [activePlugin.id]);
 
   return (
     <div className="app-shell">
       <div className="app-main">
         <TopBar title={activePlugin.label} subtitle={SUBTITLES[activePlugin.id]} />
-        <div className="app-content">
+        <div className="app-content" ref={contentRef}>
           <ActiveComponent />
         </div>
       </div>

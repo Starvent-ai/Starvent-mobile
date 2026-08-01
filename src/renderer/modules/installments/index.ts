@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "installments",
   label: "فروش اقساطی",
   icon: "🗓",
-  order: 10,
+  order: 6,
   component: InstallmentSales
 });

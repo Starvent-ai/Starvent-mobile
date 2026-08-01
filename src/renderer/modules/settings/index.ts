@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "settings",
   label: "تنظیمات",
   icon: "⚙",
-  order: 99,
+  order: 98,
   component: Settings
 });

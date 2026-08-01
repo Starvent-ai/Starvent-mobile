@@ -5,7 +5,7 @@ import { SortableTh } from "@/components/SortableTh";
 import { useMobilePriceList } from "@/state/useMobilePriceList";
 import type { InventoryItem } from "@shared/types";
 
-const CATEGORIES = ["موبایل", "تبلت", "ساعت هوشمند", "هدفون", "پاوربانک", "قاب", "قطعات تعمیرات"];
+const CATEGORIES = ["موبایل", "تبلت", "لوازم جانبی", "گجت", "تعمیراتی"];
 
 interface EditableFields {
   name: string;

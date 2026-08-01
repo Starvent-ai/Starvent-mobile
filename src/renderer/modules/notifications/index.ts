@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "notifications",
   label: "پیامک و اطلاع‌رسانی",
   icon: "✉",
-  order: 15,
+  order: 13,
   component: Notifications
 });

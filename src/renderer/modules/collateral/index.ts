@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "collateral",
   label: "مدیریت ضمانت",
   icon: "🛡",
-  order: 11,
+  order: 7,
   component: Collateral
 });

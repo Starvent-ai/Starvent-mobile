@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "accounting",
   label: "حسابداری",
   icon: "💰",
-  order: 6,
+  order: 10,
   component: Accounting
 });

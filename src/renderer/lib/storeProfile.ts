@@ -14,6 +14,10 @@ export interface StoreProfile {
   backupIntervalHours: number;
   proxyAddress: string;
   offlineModeEnabled: boolean;
+  /** Used to pre-fill the Calculator's tax field — per the "calculator
+   *  should just calculate" principle, business-level defaults like this
+   *  live in Settings, not re-typed into a tool every time. */
+  defaultTaxPercent: number;
 }
 
 export const STORE_PROFILE_KEY = "store-profile";
@@ -31,7 +35,8 @@ export const DEFAULT_STORE_PROFILE: StoreProfile = {
   backupFolder: "",
   backupIntervalHours: 24,
   proxyAddress: "",
-  offlineModeEnabled: false
+  offlineModeEnabled: false,
+  defaultTaxPercent: 9
 };
 
 /**

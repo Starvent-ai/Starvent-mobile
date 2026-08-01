@@ -25,6 +25,6 @@ pluginRegistry.register({
   id: "ai-suggestions-example",
   label: "پیشنهادهای AI",
   icon: "✦",
-  order: 9,
+  order: 15,
   component: AiSuggestionsPanel
 });

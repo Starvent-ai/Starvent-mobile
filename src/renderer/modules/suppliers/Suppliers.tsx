@@ -56,39 +56,6 @@ export function Suppliers(): JSX.Element {
   return (
     <div>
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>ثبت تأمین‌کنندهٔ جدید</h3>
-        <form onSubmit={handleCreateSupplier}>
-          <div className="form-row">
-            <div>
-              <label htmlFor="sup-name">نام</label>
-              <input id="sup-name" value={name} onChange={(e) => setName(e.target.value)} required />
-            </div>
-            <div>
-              <label htmlFor="sup-phone">تلفن</label>
-              <input
-                id="sup-phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
-                inputMode="numeric"
-                maxLength={11}
-              />
-            </div>
-            <div>
-              <label htmlFor="sup-address">آدرس</label>
-              <input id="sup-address" value={address} onChange={(e) => setAddress(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="sup-contract">یادداشت قرارداد</label>
-              <input id="sup-contract" value={contractNotes} onChange={(e) => setContractNotes(e.target.value)} />
-            </div>
-          </div>
-          <button type="submit" className="btn-primary">
-            ثبت تأمین‌کننده
-          </button>
-        </form>
-      </div>
-
-      <div className="card" style={{ marginTop: 24 }}>
         <h3 style={{ marginTop: 0 }}>لیست تأمین‌کنندگان</h3>
         <table className="data-table">
           <thead>
@@ -204,6 +171,39 @@ export function Suppliers(): JSX.Element {
           </div>
           <button type="submit" className="btn-primary">
             ثبت تسویه
+          </button>
+        </form>
+      </div>
+
+      <div className="card" style={{ marginTop: 24 }}>
+        <h3 style={{ marginTop: 0 }}>ثبت تأمین‌کنندهٔ جدید</h3>
+        <form onSubmit={handleCreateSupplier}>
+          <div className="form-row">
+            <div>
+              <label htmlFor="sup-name">نام</label>
+              <input id="sup-name" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+            <div>
+              <label htmlFor="sup-phone">تلفن</label>
+              <input
+                id="sup-phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                inputMode="numeric"
+                maxLength={11}
+              />
+            </div>
+            <div>
+              <label htmlFor="sup-address">آدرس</label>
+              <input id="sup-address" value={address} onChange={(e) => setAddress(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="sup-contract">یادداشت قرارداد</label>
+              <input id="sup-contract" value={contractNotes} onChange={(e) => setContractNotes(e.target.value)} />
+            </div>
+          </div>
+          <button type="submit" className="btn-primary">
+            ثبت تأمین‌کننده
           </button>
         </form>
       </div>

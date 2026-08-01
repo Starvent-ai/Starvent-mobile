@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "security",
   label: "امنیت",
   icon: "🔒",
-  order: 13,
+  order: 16,
   component: Security
 });

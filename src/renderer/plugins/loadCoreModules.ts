@@ -3,6 +3,7 @@
 // the shell (App.tsx / Sidebar.tsx) never needs to change.
 import "@/modules/dashboard";
 import "@/modules/inventory";
+import "@/modules/livePrices";
 import "@/modules/sales";
 import "@/modules/customers";
 import "@/modules/repairs";

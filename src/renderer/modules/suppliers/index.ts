@@ -5,6 +5,6 @@ pluginRegistry.register({
   id: "suppliers",
   label: "تأمین‌کنندگان",
   icon: "🚚",
-  order: 5,
+  order: 9,
   component: Suppliers
 });

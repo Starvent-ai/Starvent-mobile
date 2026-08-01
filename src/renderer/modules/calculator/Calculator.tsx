@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { computeCalculatorResult, type DiscountType } from "./calculatorMath";
+import { loadStoreProfile } from "@/lib/storeProfile";
 
 function toNumber(value: string): number {
   const n = Number(value);
@@ -14,6 +15,16 @@ export function Calculator(): JSX.Element {
   const [taxPercent, setTaxPercent] = useState("0");
   const [installmentCount, setInstallmentCount] = useState("1");
   const [note, setNote] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    loadStoreProfile().then((profile) => {
+      if (!cancelled) setTaxPercent(String(profile.defaultTaxPercent));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const result = useMemo(() => {
     return computeCalculatorResult({
