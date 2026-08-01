@@ -91,6 +91,18 @@ function paidInstallmentCount(contractId: string): number {
   return installmentStore.getState().payments.filter((p) => p.contractId === contractId).length;
 }
 
+/**
+ * Estimates the next unpaid installment's due date: startDate + one month
+ * per installment already paid. Returns null once the contract is fully
+ * settled/cancelled — there's nothing left to be "due".
+ */
+export function getNextDueDate(contract: InstallmentContract, paidCount: number): Date | null {
+  if (contract.status !== "در جریان") return null;
+  const [y, m, d] = contract.startDate.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return new Date(y, m - 1 + paidCount + 1, d);
+}
+
 export function useInstallments() {
   const state = installmentStore.useStore();
   return {
