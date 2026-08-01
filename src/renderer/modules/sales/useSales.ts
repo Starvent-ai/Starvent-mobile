@@ -2,6 +2,7 @@ import { createStore } from "@/state/createStore";
 import type { SaleRecord } from "@shared/types";
 import { inventoryActions } from "@/modules/inventory/useInventory";
 import { customerActions } from "@/modules/customers/useCustomers";
+import { accountingActions } from "@/modules/accounting/useAccounting";
 
 interface SalesState {
   sales: SaleRecord[];
@@ -45,6 +46,13 @@ function recordSale(input: RecordSaleInput): { ok: true } | { ok: false; error: 
   if (input.customerId) {
     customerActions.incrementPurchases(input.customerId);
   }
+  accountingActions.recordTransaction({
+    type: "درآمد",
+    account: "صندوق",
+    category: "فروش",
+    amount: total,
+    description: `فروش ${item.name} × ${input.quantity}`
+  });
 
   return { ok: true };
 }

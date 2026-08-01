@@ -1,6 +1,7 @@
 import { createStore } from "@/state/createStore";
 import type { RepairPriority, RepairStatus, RepairTicket } from "@shared/types";
 import { customerActions } from "@/modules/customers/useCustomers";
+import { accountingActions } from "@/modules/accounting/useAccounting";
 
 interface RepairsState {
   tickets: RepairTicket[];
@@ -61,9 +62,24 @@ function createTicket(input: NewTicketInput): void {
 }
 
 function updateStatus(ticketId: string, status: RepairStatus): void {
+  const previous = repairsStore.getState().tickets.find((t) => t.id === ticketId);
+
   repairsStore.setState((prev) => ({
     tickets: prev.tickets.map((t) => (t.id === ticketId ? { ...t, status } : t))
   }));
+
+  // Record the repair income exactly once, at the genuine moment of
+  // delivery — not on every edit to parts/labor, and not if the ticket
+  // was already delivered before (avoids double-counting on a repeat click).
+  if (previous && previous.status !== "تحویل داده شده" && status === "تحویل داده شده" && previous.laborFee > 0) {
+    accountingActions.recordTransaction({
+      type: "درآمد",
+      account: "صندوق",
+      category: "سایر",
+      amount: previous.laborFee,
+      description: `اجرت تعمیر ${previous.deviceModel} — ${previous.customerName || "بدون نام"}`
+    });
+  }
 }
 
 function updatePartsAndLabor(ticketId: string, partsUsed: string, laborFee: number): void {

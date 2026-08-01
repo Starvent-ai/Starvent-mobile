@@ -3,6 +3,7 @@ import { useInstallments } from "./useInstallments";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { InstallmentContract, InstallmentContractStatus } from "@shared/types";
+import { CurrencyInput } from "@/components/CurrencyInput";
 
 export function InstallmentSales(): JSX.Element {
   const { companies, contracts, createCompany, createContract, recordPayment, updateContractStatus, paidInstallmentCount } =
@@ -19,8 +20,8 @@ export function InstallmentSales(): JSX.Element {
   const [companyId, setCompanyId] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
-  const [totalAmount, setTotalAmount] = useState("0");
-  const [downPayment, setDownPayment] = useState("0");
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [downPayment, setDownPayment] = useState(0);
   const [installmentCount, setInstallmentCount] = useState("6");
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [guaranteeNote, setGuaranteeNote] = useState("");
@@ -43,16 +44,16 @@ export function InstallmentSales(): JSX.Element {
       companyId: companyId || null,
       customerName: customerName.trim(),
       itemDescription: itemDescription.trim(),
-      totalAmount: Number(totalAmount) || 0,
-      downPayment: Number(downPayment) || 0,
+      totalAmount,
+      downPayment,
       installmentCount: Number(installmentCount) || 1,
       startDate,
       guaranteeNote: guaranteeNote.trim()
     });
     setCustomerName("");
     setItemDescription("");
-    setTotalAmount("0");
-    setDownPayment("0");
+    setTotalAmount(0);
+    setDownPayment(0);
     setGuaranteeNote("");
   }
 
@@ -125,12 +126,12 @@ export function InstallmentSales(): JSX.Element {
           </div>
           <div className="form-row">
             <div>
-              <label htmlFor="con-total">مبلغ کل (تومان)</label>
-              <input id="con-total" type="number" min={0} value={totalAmount} onChange={(e) => setTotalAmount(e.target.value)} />
+              <label htmlFor="con-total">مبلغ کل</label>
+              <CurrencyInput id="con-total" value={totalAmount} onChange={setTotalAmount} />
             </div>
             <div>
-              <label htmlFor="con-down">پیش‌پرداخت (تومان)</label>
-              <input id="con-down" type="number" min={0} value={downPayment} onChange={(e) => setDownPayment(e.target.value)} />
+              <label htmlFor="con-down">پیش‌پرداخت</label>
+              <CurrencyInput id="con-down" value={downPayment} onChange={setDownPayment} />
             </div>
             <div>
               <label htmlFor="con-count">تعداد اقساط</label>

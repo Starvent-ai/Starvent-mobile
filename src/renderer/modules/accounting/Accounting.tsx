@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useAccounting } from "./useAccounting";
+import { CurrencyInput } from "@/components/CurrencyInput";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { AccountingCategory, CashTransaction, CheckRecord } from "@shared/types";
@@ -18,7 +19,7 @@ export function Accounting(): JSX.Element {
   const [type, setType] = useState<"درآمد" | "هزینه">("هزینه");
   const [account, setAccount] = useState<"صندوق" | "بانک">("صندوق");
   const [category, setCategory] = useState<AccountingCategory>("سایر");
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
 
   const [checkDirection, setCheckDirection] = useState<"دریافتنی" | "پرداختنی">("دریافتنی");
@@ -28,9 +29,9 @@ export function Accounting(): JSX.Element {
 
   function handleTransactionSubmit(event: FormEvent): void {
     event.preventDefault();
-    if (!description.trim() || Number(amount) <= 0) return;
-    recordTransaction({ type, account, category, amount: Number(amount), description: description.trim() });
-    setAmount("0");
+    if (!description.trim() || amount <= 0) return;
+    recordTransaction({ type, account, category, amount, description: description.trim() });
+    setAmount(0);
     setDescription("");
   }
 
@@ -81,8 +82,8 @@ export function Accounting(): JSX.Element {
               </select>
             </div>
             <div>
-              <label htmlFor="acc-amount">مبلغ (تومان)</label>
-              <input id="acc-amount" type="number" min={0} value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <label htmlFor="acc-amount">مبلغ</label>
+              <CurrencyInput id="acc-amount" value={amount} onChange={setAmount} />
             </div>
           </div>
           <div className="form-row">

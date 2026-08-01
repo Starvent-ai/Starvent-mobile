@@ -4,6 +4,7 @@ import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { Supplier } from "@shared/types";
 import { formatDateForDisplay } from "@/lib/jalali";
+import { CurrencyInput } from "@/components/CurrencyInput";
 
 export function Suppliers(): JSX.Element {
   const { suppliers, purchases, createSupplier, recordPurchase, settleBalance, setRating } = useSuppliers();
@@ -16,11 +17,11 @@ export function Suppliers(): JSX.Element {
 
   const [purchaseSupplierId, setPurchaseSupplierId] = useState("");
   const [itemDescription, setItemDescription] = useState("");
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState(0);
   const [paid, setPaid] = useState(false);
 
   const [settleSupplierId, setSettleSupplierId] = useState("");
-  const [settleAmount, setSettleAmount] = useState("0");
+  const [settleAmount, setSettleAmount] = useState(0);
 
   function handleCreateSupplier(event: FormEvent): void {
     event.preventDefault();
@@ -38,19 +39,19 @@ export function Suppliers(): JSX.Element {
     recordPurchase({
       supplierId: purchaseSupplierId,
       itemDescription: itemDescription.trim(),
-      amount: Number(amount) || 0,
+      amount,
       paid
     });
     setItemDescription("");
-    setAmount("0");
+    setAmount(0);
     setPaid(false);
   }
 
   function handleSettle(event: FormEvent): void {
     event.preventDefault();
     if (!settleSupplierId) return;
-    settleBalance(settleSupplierId, Number(settleAmount) || 0);
-    setSettleAmount("0");
+    settleBalance(settleSupplierId, settleAmount);
+    setSettleAmount(0);
   }
 
   return (
@@ -109,8 +110,8 @@ export function Suppliers(): JSX.Element {
               <input id="pur-desc" value={itemDescription} onChange={(e) => setItemDescription(e.target.value)} required />
             </div>
             <div>
-              <label htmlFor="pur-amount">مبلغ (تومان)</label>
-              <input id="pur-amount" type="number" min={0} value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <label htmlFor="pur-amount">مبلغ</label>
+              <CurrencyInput id="pur-amount" value={amount} onChange={setAmount} />
             </div>
             <div>
               <label htmlFor="pur-paid">وضعیت پرداخت</label>
@@ -165,8 +166,8 @@ export function Suppliers(): JSX.Element {
               </select>
             </div>
             <div>
-              <label htmlFor="settle-amount">مبلغ تسویه‌شده (تومان)</label>
-              <input id="settle-amount" type="number" min={0} value={settleAmount} onChange={(e) => setSettleAmount(e.target.value)} />
+              <label htmlFor="settle-amount">مبلغ تسویه‌شده</label>
+              <CurrencyInput id="settle-amount" value={settleAmount} onChange={setSettleAmount} />
             </div>
           </div>
           <button type="submit" className="btn-primary">

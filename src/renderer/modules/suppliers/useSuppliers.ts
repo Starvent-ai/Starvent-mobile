@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { Supplier, SupplierPurchase } from "@shared/types";
+import { accountingActions } from "@/modules/accounting/useAccounting";
 
 interface SuppliersState {
   suppliers: Supplier[];
@@ -59,6 +60,20 @@ function recordPurchase(input: NewPurchaseInput): void {
       s.id === input.supplierId && !input.paid ? { ...s, balance: s.balance + input.amount } : s
     )
   }));
+
+  // Only a cash purchase is an immediate expense. A credit (نسیه) purchase
+  // becomes an expense when it's actually settled (see settleBalance) —
+  // that's when cash actually leaves the shop.
+  if (input.paid) {
+    const supplierName = suppliersStore.getState().suppliers.find((s) => s.id === input.supplierId)?.name ?? "تأمین‌کننده";
+    accountingActions.recordTransaction({
+      type: "هزینه",
+      account: "صندوق",
+      category: "خرید کالا",
+      amount: input.amount,
+      description: `خرید نقدی از ${supplierName}: ${input.itemDescription}`
+    });
+  }
 }
 
 function settleBalance(supplierId: string, amount: number): void {
@@ -68,6 +83,15 @@ function settleBalance(supplierId: string, amount: number): void {
       s.id === supplierId ? { ...s, balance: s.balance - amount } : s
     )
   }));
+
+  const supplierName = suppliersStore.getState().suppliers.find((s) => s.id === supplierId)?.name ?? "تأمین‌کننده";
+  accountingActions.recordTransaction({
+    type: "هزینه",
+    account: "صندوق",
+    category: "خرید کالا",
+    amount,
+    description: `تسویهٔ بدهی به ${supplierName}`
+  });
 }
 
 function setRating(supplierId: string, rating: number): void {
