@@ -9,7 +9,7 @@ import { formatDateForDisplay } from "@/lib/jalali";
 const CATEGORIES: AccountingCategory[] = ["فروش", "خرید کالا", "اجاره", "حقوق", "قبوض", "سایر"];
 
 export function Accounting(): JSX.Element {
-  const { transactions, checks, summary, recordTransaction, recordCheck, updateCheckStatus } = useAccounting();
+  const { transactions, checks, summary, recordTransaction, voidTransaction, recordCheck, updateCheckStatus } = useAccounting();
   const { sorted: sortedTxns, sortKey, direction, toggleSort } = useSortableRows<CashTransaction>(
     transactions,
     "date",
@@ -109,17 +109,27 @@ export function Accounting(): JSX.Element {
               <SortableTh label="دسته" sortKeyName="category" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <SortableTh label="مبلغ" sortKeyName="amount" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <th>شرح</th>
+              <th>وضعیت</th>
             </tr>
           </thead>
           <tbody>
             {sortedTxns.map((t) => (
-              <tr key={t.id}>
+              <tr key={t.id} style={t.voided ? { opacity: 0.5, textDecoration: "line-through" } : undefined}>
                 <td>{formatDateForDisplay(t.date)}</td>
                 <td className={t.type === "هزینه" ? "data-table__low-stock" : undefined}>{t.type}</td>
                 <td>{t.account}</td>
                 <td>{t.category}</td>
                 <td>{t.amount.toLocaleString("fa-IR")}</td>
                 <td>{t.description}</td>
+                <td style={{ textDecoration: "none" }}>
+                  {t.voided ? (
+                    <span style={{ color: "var(--sv-text-600)" }}>باطل شده</span>
+                  ) : (
+                    <button type="button" className="btn-secondary" onClick={() => voidTransaction(t.id)}>
+                      ابطال
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

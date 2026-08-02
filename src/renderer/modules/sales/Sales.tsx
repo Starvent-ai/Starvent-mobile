@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useInventory } from "@/modules/inventory/useInventory";
 import { useCustomers } from "@/modules/customers/useCustomers";
 import { useSales } from "./useSales";
@@ -6,6 +6,9 @@ import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import { formatDateForDisplay } from "@/lib/jalali";
 import type { SaleRecord } from "@shared/types";
+import { loadStoreProfile } from "@/lib/storeProfile";
+import { printRequestActions } from "@/state/printRequestStore";
+import { navigationActions } from "@/state/navigationStore";
 
 export function Sales(): JSX.Element {
   const { items } = useInventory();
@@ -17,6 +20,17 @@ export function Sales(): JSX.Element {
   const [customerId, setCustomerId] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [feedback, setFeedback] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [autoPrint, setAutoPrint] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadStoreProfile().then((profile) => {
+      if (!cancelled) setAutoPrint(profile.autoPrintAfterSale);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
@@ -29,6 +43,10 @@ export function Sales(): JSX.Element {
     if (result.ok) {
       setFeedback({ type: "success", text: "فروش با موفقیت ثبت شد." });
       setQuantity("1");
+      if (autoPrint) {
+        printRequestActions.requestInvoicePrint(result.saleId);
+        navigationActions.goTo("printing");
+      }
     } else {
       setFeedback({ type: "error", text: result.error });
     }

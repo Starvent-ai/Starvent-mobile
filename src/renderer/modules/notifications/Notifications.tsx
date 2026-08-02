@@ -3,7 +3,8 @@ import { fillTemplate, useSmsTemplates } from "./useSmsTemplates";
 import { useSmsLog } from "./useSmsLog";
 import { useIncomingCaptureListener, useIncomingCaptures } from "./useIncomingCaptures";
 import { useCustomers } from "@/modules/customers/useCustomers";
-import { useInstallments } from "@/modules/installments/useInstallments";
+import { useInstallments, getNextDueDate } from "@/modules/installments/useInstallments";
+import { gregorianToJalali } from "@/lib/jalali";
 import { useCollateral } from "@/modules/collateral/useCollateral";
 import { loadStoreProfile, DEFAULT_STORE_PROFILE, type StoreProfile } from "@/lib/storeProfile";
 import { formatDateForDisplay } from "@/lib/jalali";
@@ -42,7 +43,7 @@ export function Notifications(): JSX.Element {
   const { entries: logEntries, addLogEntry } = useSmsLog();
   const { captures, addCapture, markHandled, dismissCapture } = useIncomingCaptures();
   const { customers } = useCustomers();
-  const { contracts } = useInstallments();
+  const { contracts, paidInstallmentCount } = useInstallments();
   const { records: collateralRecords, isNearDue } = useCollateral();
 
   const [storeProfile, setStoreProfile] = useState<StoreProfile>(DEFAULT_STORE_PROFILE);
@@ -83,16 +84,29 @@ export function Notifications(): JSX.Element {
     };
   }, []);
 
-  // Today's automatic reminders: birthdays, near-due installments, near-due collateral.
+  // Automatic reminders: birthday (one day before, per spec), near-due
+  // installments, near-due collateral.
   const todayReminders = useMemo(() => {
-    const todayMonthDay = new Date().toISOString().slice(5, 10);
+    // Birthdays are entered/stored as a Jalali month-day (see Customers'
+    // Jalali date picker) — so "tomorrow" must be computed in the Jalali
+    // calendar too, or the comparison would silently compare the wrong
+    // calendar and never fire (or fire on the wrong day).
+    const tomorrowGregorian = new Date();
+    tomorrowGregorian.setDate(tomorrowGregorian.getDate() + 1);
+    const [, tjm, tjd] = gregorianToJalali(
+      tomorrowGregorian.getFullYear(),
+      tomorrowGregorian.getMonth() + 1,
+      tomorrowGregorian.getDate()
+    );
+    const tomorrowJalaliMonthDay = `${String(tjm).padStart(2, "0")}-${String(tjd).padStart(2, "0")}`;
+
     const items: { key: string; label: string; target: ComposeTarget }[] = [];
 
     for (const customer of customers) {
-      if (customer.birthdayMonthDay === todayMonthDay) {
+      if (customer.birthdayMonthDay === tomorrowJalaliMonthDay) {
         items.push({
           key: `bday-${customer.id}`,
-          label: `تولد ${customer.fullName} امروز است`,
+          label: `فردا تولد ${customer.fullName} است`,
           target: { phone: customer.phone, customerName: customer.fullName, suggestedCategory: "تبریک تولد" }
         });
       }
@@ -100,9 +114,8 @@ export function Notifications(): JSX.Element {
 
     for (const contract of contracts) {
       if (contract.status !== "در جریان") continue;
-      const paidSoFar = 0; // conservative: without paid count here, just surface all active contracts as a manual check list
-      const nextDue = new Date(contract.startDate);
-      nextDue.setMonth(nextDue.getMonth() + paidSoFar + 1);
+      const nextDue = getNextDueDate(contract, paidInstallmentCount(contract.id));
+      if (!nextDue) continue;
       const diffDays = Math.floor((nextDue.getTime() - Date.now()) / 86400000);
       if (diffDays <= 3) {
         items.push({

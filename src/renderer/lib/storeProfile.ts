@@ -18,6 +18,9 @@ export interface StoreProfile {
    *  should just calculate" principle, business-level defaults like this
    *  live in Settings, not re-typed into a tool every time. */
   defaultTaxPercent: number;
+  /** If true, after a successful sale the app jumps straight to Printing
+   *  with that sale pre-selected. If false, the sale is just recorded. */
+  autoPrintAfterSale: boolean;
 }
 
 export const STORE_PROFILE_KEY = "store-profile";
@@ -36,7 +39,8 @@ export const DEFAULT_STORE_PROFILE: StoreProfile = {
   backupIntervalHours: 24,
   proxyAddress: "",
   offlineModeEnabled: false,
-  defaultTaxPercent: 9
+  defaultTaxPercent: 9,
+  autoPrintAfterSale: false
 };
 
 /**

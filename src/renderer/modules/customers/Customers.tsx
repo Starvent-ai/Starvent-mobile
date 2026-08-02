@@ -1,7 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useCustomers } from "./useCustomers";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
+import { JalaliMonthDayPicker } from "@/components/JalaliMonthDayPicker";
+import { JALALI_MONTH_NAMES } from "@/lib/jalali";
+import { usePendingCustomerIntake } from "@/state/customerIntakeStore";
 import type { Customer, LoyaltyTier } from "@shared/types";
 
 const LOYALTY_TIERS: LoyaltyTier[] = ["عادی", "نقره‌ای", "طلایی", "ویژه"];
@@ -20,9 +23,18 @@ export function Customers(): JSX.Element {
   const [editBirthday, setEditBirthday] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  const { pendingPhone, clearPendingPhone } = usePendingCustomerIntake();
+  useEffect(() => {
+    if (pendingPhone) {
+      setPhone(pendingPhone);
+      clearPendingPhone();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingPhone]);
+
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
-    if (!fullName.trim() || !phone.trim()) return;
+    if (!fullName.trim() && !phone.trim()) return;
     addCustomer({
       fullName: fullName.trim(),
       phone: phone.trim(),
@@ -75,7 +87,7 @@ export function Customers(): JSX.Element {
           <div className="form-row">
             <div>
               <label htmlFor="cust-name">نام و نام خانوادگی</label>
-              <input id="cust-name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+              <input id="cust-name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="اختیاری" />
             </div>
             <div>
               <label htmlFor="cust-phone">شماره تماس</label>
@@ -85,41 +97,15 @@ export function Customers(): JSX.Element {
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
                 inputMode="numeric"
                 maxLength={11}
-                required
+                placeholder="اختیاری"
               />
             </div>
-            <div>
-              <label htmlFor="cust-birthday-day">روز تولد</label>
-              <input
-                id="cust-birthday-day"
-                type="number"
-                min={1}
-                max={31}
-                placeholder="روز"
-                value={birthdayMonthDay ? String(Number(birthdayMonthDay.split("-")[1])) : ""}
-                onChange={(e) => {
-                  const day = e.target.value.padStart(2, "0");
-                  const month = birthdayMonthDay ? birthdayMonthDay.split("-")[0] : "01";
-                  setBirthdayMonthDay(e.target.value ? `${month}-${day}` : "");
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="cust-birthday-month">ماه تولد</label>
-              <input
-                id="cust-birthday-month"
-                type="number"
-                min={1}
-                max={12}
-                placeholder="ماه"
-                value={birthdayMonthDay ? String(Number(birthdayMonthDay.split("-")[0])) : ""}
-                onChange={(e) => {
-                  const month = e.target.value.padStart(2, "0");
-                  const day = birthdayMonthDay ? birthdayMonthDay.split("-")[1] : "01";
-                  setBirthdayMonthDay(e.target.value ? `${month}-${day}` : "");
-                }}
-              />
-            </div>
+            <JalaliMonthDayPicker
+              dayInputId="cust-birthday-day"
+              monthInputId="cust-birthday-month"
+              value={birthdayMonthDay}
+              onChange={setBirthdayMonthDay}
+            />
           </div>
           <button type="submit" className="btn-primary">
             ثبت مشتری
@@ -180,19 +166,22 @@ export function Customers(): JSX.Element {
                           setEditBirthday(e.target.value ? `${month}-${day}` : "");
                         }}
                       />
-                      <input
-                        type="number"
-                        min={1}
-                        max={12}
-                        placeholder="ماه"
-                        style={{ width: 48 }}
-                        value={editBirthday ? String(Number(editBirthday.split("-")[0])) : ""}
+                      <select
+                        style={{ width: 90 }}
+                        value={editBirthday ? editBirthday.split("-")[0] : ""}
                         onChange={(e) => {
-                          const month = e.target.value.padStart(2, "0");
+                          const month = e.target.value;
                           const day = editBirthday ? editBirthday.split("-")[1] : "01";
-                          setEditBirthday(e.target.value ? `${month}-${day}` : "");
+                          setEditBirthday(month ? `${month}-${day}` : "");
                         }}
-                      />
+                      >
+                        <option value="">ماه</option>
+                        {JALALI_MONTH_NAMES.map((name, index) => (
+                          <option key={name} value={String(index + 1).padStart(2, "0")}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </td>
                   <td style={{ display: "flex", gap: 8 }}>
@@ -206,8 +195,8 @@ export function Customers(): JSX.Element {
                 </tr>
               ) : (
                 <tr key={c.id}>
-                  <td>{c.fullName}</td>
-                  <td>{c.phone}</td>
+                  <td>{c.fullName || "بدون نام"}</td>
+                  <td>{c.phone || "—"}</td>
                   <td>{c.loyaltyTier}</td>
                   <td>{c.totalPurchases}</td>
                   <td>

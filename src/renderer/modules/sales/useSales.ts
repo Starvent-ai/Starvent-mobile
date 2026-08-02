@@ -17,7 +17,7 @@ interface RecordSaleInput {
 }
 
 /** Records a sale and keeps inventory + customer purchase counts in sync. */
-function recordSale(input: RecordSaleInput): { ok: true } | { ok: false; error: string } {
+function recordSale(input: RecordSaleInput): { ok: true; saleId: string } | { ok: false; error: string } {
   const item = inventoryActions.getState().items.find((i) => i.id === input.itemId);
   if (!item) {
     return { ok: false, error: "کالای انتخاب‌شده یافت نشد." };
@@ -54,7 +54,7 @@ function recordSale(input: RecordSaleInput): { ok: true } | { ok: false; error: 
     description: `فروش ${item.name} × ${input.quantity}`
   });
 
-  return { ok: true };
+  return { ok: true, saleId: record.id };
 }
 
 export function useSales() {

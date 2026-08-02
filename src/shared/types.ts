@@ -140,6 +140,9 @@ export interface CashTransaction {
   description: string;
   date: string;
   createdAt: string;
+  /** The only way to reverse a mistaken transaction — it is never deleted,
+   *  only voided, so the financial history stays intact and auditable. */
+  voided: boolean;
 }
 
 export interface CheckRecord {

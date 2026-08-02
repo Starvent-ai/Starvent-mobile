@@ -5,6 +5,7 @@ import { useRepairs } from "@/modules/repairs/useRepairs";
 import { DEFAULT_STORE_PROFILE, loadStoreProfile, type StoreProfile } from "@/lib/storeProfile";
 import type { RepairTicket, SaleRecord } from "@shared/types";
 import { formatDateForDisplay } from "@/lib/jalali";
+import { usePendingSalePrint } from "@/state/printRequestStore";
 
 type DocType = "invoice" | "repair-receipt";
 
@@ -17,6 +18,16 @@ export function Printing(): JSX.Element {
   const [docType, setDocType] = useState<DocType>("invoice");
   const [selectedSaleId, setSelectedSaleId] = useState("");
   const [selectedTicketId, setSelectedTicketId] = useState("");
+  const { pendingSaleId, clearPendingSaleId } = usePendingSalePrint();
+
+  useEffect(() => {
+    if (pendingSaleId) {
+      setDocType("invoice");
+      setSelectedSaleId(pendingSaleId);
+      clearPendingSaleId();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingSaleId]);
 
   useEffect(() => {
     let cancelled = false;

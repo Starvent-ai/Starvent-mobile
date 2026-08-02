@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { createStore } from "@/state/createStore";
 import { customerActions } from "@/modules/customers/useCustomers";
+import { customerIntakeActions } from "@/state/customerIntakeStore";
+import { navigationActions } from "@/state/navigationStore";
 import type { IncomingPhoneCapture } from "@shared/types";
 
 interface CapturesState {
@@ -22,6 +24,13 @@ function addCapture(phone: string, source: IncomingPhoneCapture["source"]): void
     receivedAt: new Date().toISOString()
   };
   capturesStore.setState((prev) => ({ captures: [capture, ...prev.captures] }));
+
+  // Per spec: an unrecognized number should open a fresh customer form
+  // with the phone already filled in, so the shopkeeper doesn't retype it.
+  if (!matched) {
+    customerIntakeActions.requestNewCustomerForm(normalized);
+    navigationActions.goTo("customers");
+  }
 }
 
 function markHandled(captureId: string): void {

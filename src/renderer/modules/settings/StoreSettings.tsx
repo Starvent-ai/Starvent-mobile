@@ -100,6 +100,21 @@ export function StoreSettings(): JSX.Element {
         ) : null}
       </div>
 
+      <h3 style={{ marginTop: "var(--sv-space-6)" }}>رفتار پس از ثبت فروش</h3>
+      <div className="form-row">
+        <div>
+          <label htmlFor="ss-auto-print">بعد از ثبت فروش</label>
+          <select
+            id="ss-auto-print"
+            value={profile.autoPrintAfterSale ? "print" : "record-only"}
+            onChange={(e) => update("autoPrintAfterSale", e.target.value === "print")}
+          >
+            <option value="record-only">فقط ثبت انجام شود</option>
+            <option value="print">صفحهٔ چاپ فاکتور مستقیم باز شود</option>
+          </select>
+        </div>
+      </div>
+
       <h3 style={{ marginTop: "var(--sv-space-6)" }}>تنظیمات محاسبات</h3>
       <p style={{ color: "var(--sv-text-600)", marginTop: 0 }}>
         این درصد به‌صورت پیش‌فرض در «ماشین‌حساب» پر می‌شود — خود ماشین‌حساب فقط محاسبه می‌کند، عدد پایه از

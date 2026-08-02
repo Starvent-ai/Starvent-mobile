@@ -21,9 +21,23 @@ function recordTransaction(input: NewTransactionInput): void {
     ...input,
     id: `txn-${Date.now()}`,
     date: new Date().toISOString().slice(0, 10),
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    voided: false
   };
   accountingStore.setState((prev) => ({ ...prev, transactions: [...prev.transactions, transaction] }));
+}
+
+/**
+ * The ONLY way to reverse a transaction — there is deliberately no
+ * deleteTransaction function anywhere in the app. Voiding keeps the
+ * record (and its audit trail) but excludes it from balances/summary,
+ * so mistakes can be corrected without ever losing financial history.
+ */
+function voidTransaction(transactionId: string): void {
+  accountingStore.setState((prev) => ({
+    ...prev,
+    transactions: prev.transactions.map((t) => (t.id === transactionId ? { ...t, voided: true } : t))
+  }));
 }
 
 interface NewCheckInput {
@@ -65,6 +79,7 @@ function computeSummary(transactions: CashTransaction[]): AccountingSummary {
   let totalExpense = 0;
 
   for (const t of transactions) {
+    if (t.voided) continue;
     const signed = t.type === "درآمد" ? t.amount : -t.amount;
     if (t.account === "صندوق") cashBalance += signed;
     else bankBalance += signed;
@@ -83,6 +98,7 @@ export function useAccounting() {
     checks: state.checks,
     summary: computeSummary(state.transactions),
     recordTransaction,
+    voidTransaction,
     recordCheck,
     updateCheckStatus
   };
@@ -90,6 +106,7 @@ export function useAccounting() {
 
 export const accountingActions = {
   recordTransaction,
+  voidTransaction,
   recordCheck,
   updateCheckStatus,
   getState: accountingStore.getState
