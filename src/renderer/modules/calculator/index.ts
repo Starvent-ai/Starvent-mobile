@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "ماشین‌حساب",
   icon: "🧮",
   order: 11,
+  group: "مالی",
   component: Calculator
 });

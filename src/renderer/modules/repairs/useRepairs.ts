@@ -2,6 +2,7 @@ import { createStore } from "@/state/createStore";
 import type { RepairPriority, RepairStatus, RepairTicket } from "@shared/types";
 import { customerActions } from "@/modules/customers/useCustomers";
 import { accountingActions } from "@/modules/accounting/useAccounting";
+import { smsEventQueueActions } from "@/modules/notifications/useSmsEventQueue";
 
 interface RepairsState {
   tickets: RepairTicket[];
@@ -67,6 +68,20 @@ function updateStatus(ticketId: string, status: RepairStatus): void {
   repairsStore.setState((prev) => ({
     tickets: prev.tickets.map((t) => (t.id === ticketId ? { ...t, status } : t))
   }));
+
+  // Queue the "device ready for pickup" SMS the instant it happens — not
+  // when the shopkeeper next happens to open the notifications page.
+  if (previous && previous.status !== "تکمیل شده" && status === "تکمیل شده") {
+    const phone = previous.customerId
+      ? customerActions.getState().customers.find((c) => c.id === previous.customerId)?.phone ?? ""
+      : "";
+    smsEventQueueActions.queueEvent({
+      eventLabel: `تعمیر ${previous.deviceModel} آماده تحویل شد`,
+      phone,
+      customerName: previous.customerName || "مشتری",
+      category: "دستگاه آماده"
+    });
+  }
 
   // Record the repair income exactly once, at the genuine moment of
   // delivery — not on every edit to parts/labor, and not if the ticket

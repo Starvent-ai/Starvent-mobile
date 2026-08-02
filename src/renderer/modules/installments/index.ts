@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "فروش اقساطی",
   icon: "🗓",
   order: 6,
+  group: "مالی",
   component: InstallmentSales
 });

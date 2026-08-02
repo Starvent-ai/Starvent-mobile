@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "داشبورد",
   icon: "◧",
   order: 0,
+  group: "عملیات روزانه",
   component: Dashboard
 });

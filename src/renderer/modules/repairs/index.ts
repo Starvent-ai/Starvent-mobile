@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "تعمیرات",
   icon: "🛠",
   order: 2,
+  group: "عملیات روزانه",
   component: Repairs
 });

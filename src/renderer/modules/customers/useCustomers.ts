@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { Customer } from "@shared/types";
+import { smsEventQueueActions } from "@/modules/notifications/useSmsEventQueue";
 
 interface CustomersState {
   customers: Customer[];
@@ -20,6 +21,13 @@ function addCustomer(customer: Omit<Customer, "id" | "totalPurchases">): void {
       { ...customer, id: `cus-${Date.now()}`, totalPurchases: 0 }
     ]
   }));
+
+  smsEventQueueActions.queueEvent({
+    eventLabel: "مشتری جدید ثبت شد",
+    phone: customer.phone,
+    customerName: customer.fullName || "مشتری",
+    category: "خوشامدگویی"
+  });
 }
 
 function incrementPurchases(customerId: string): void {

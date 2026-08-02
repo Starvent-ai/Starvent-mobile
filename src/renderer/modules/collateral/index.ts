@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "مدیریت ضمانت",
   icon: "🛡",
   order: 7,
+  group: "مالی",
   component: Collateral
 });

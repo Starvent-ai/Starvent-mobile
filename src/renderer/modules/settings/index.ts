@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "تنظیمات",
   icon: "⚙",
   order: 98,
+  group: "سیستم",
   component: Settings
 });

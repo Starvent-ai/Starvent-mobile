@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "امنیت",
   icon: "🔒",
   order: 16,
+  group: "سیستم",
   component: Security
 });

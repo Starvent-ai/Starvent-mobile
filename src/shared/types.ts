@@ -286,16 +286,8 @@ export interface ActivityLogEntry {
   level: "info" | "error";
 }
 
-export interface SavedPrompt {
-  id: string;
-  topic: string;
-  description: string;
-  targetModel: string;
-  generatedText: string;
-  createdAt: string;
-}
-
 export type SmsTemplateCategory =
+  | "خوشامدگویی"
   | "دستگاه آماده"
   | "کالا موجود شد"
   | "تبریک تولد"
@@ -305,6 +297,7 @@ export type SmsTemplateCategory =
   | "سایر";
 
 export const SMS_TEMPLATE_CATEGORIES: SmsTemplateCategory[] = [
+  "خوشامدگویی",
   "دستگاه آماده",
   "کالا موجود شد",
   "تبریک تولد",

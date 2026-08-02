@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "قیمت لحظه‌ای",
   icon: "📶",
   order: 5,
+  group: "کالا و انبار",
   component: LivePrices
 });

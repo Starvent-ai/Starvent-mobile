@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEven
 import { fillTemplate, useSmsTemplates } from "./useSmsTemplates";
 import { useSmsLog } from "./useSmsLog";
 import { useIncomingCaptureListener, useIncomingCaptures } from "./useIncomingCaptures";
+import { useSmsEventQueue } from "./useSmsEventQueue";
 import { useCustomers } from "@/modules/customers/useCustomers";
 import { useInstallments, getNextDueDate } from "@/modules/installments/useInstallments";
 import { gregorianToJalali } from "@/lib/jalali";
@@ -42,6 +43,7 @@ export function Notifications(): JSX.Element {
   const { templates, createTemplate, updateTemplate, deleteTemplate } = useSmsTemplates();
   const { entries: logEntries, addLogEntry } = useSmsLog();
   const { captures, addCapture, markHandled, dismissCapture } = useIncomingCaptures();
+  const { pendingEvents, markHandled: markEventHandled } = useSmsEventQueue();
   const { customers } = useCustomers();
   const { contracts, paidInstallmentCount } = useInstallments();
   const { records: collateralRecords, isNearDue } = useCollateral();
@@ -370,6 +372,45 @@ export function Notifications(): JSX.Element {
               ))}
             </tbody>
           </table>
+        )}
+      </div>
+
+      <div className="card" style={{ marginTop: 24 }}>
+        <h3 style={{ marginTop: 0 }}>رویدادهای لحظه‌ای</h3>
+        <p style={{ color: "var(--sv-text-600)", marginTop: 0, fontSize: 13 }}>
+          این‌ها بلافاصله وقتی یک رویداد واقعی رخ می‌ده (مثلاً ثبت مشتری جدید یا آماده شدن تعمیر)
+          این‌جا ظاهر می‌شن — نیازی نیست منتظر باز کردن این صفحه بمونید تا برنامه متوجه بشه.
+        </p>
+        {pendingEvents.length === 0 ? (
+          <p className="empty-state">رویداد جدیدی در انتظار نیست.</p>
+        ) : (
+          <ul style={{ paddingInlineStart: 20 }}>
+            {pendingEvents.map((event) => (
+              <li key={event.id} style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                <span>
+                  {event.eventLabel} — {event.customerName}
+                </span>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => {
+                    openCompose({
+                      phone: event.phone,
+                      customerName: event.customerName,
+                      suggestedCategory: event.category,
+                      suggestedValues: event.suggestedValues
+                    });
+                    markEventHandled(event.id);
+                  }}
+                >
+                  ارسال پیامک
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => markEventHandled(event.id)}>
+                  نادیده گرفتن
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 

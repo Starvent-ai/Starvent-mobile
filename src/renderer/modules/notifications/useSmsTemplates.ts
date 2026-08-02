@@ -11,6 +11,12 @@ function seedTemplate(category: SmsTemplateCategory, title: string, body: string
 
 const seedTemplates: SmsTemplate[] = [
   seedTemplate(
+    "خوشامدگویی",
+    "خوشامدگویی به مشتری جدید",
+    "{نام_مشتری} عزیز، به جمع مشتریان {نام_فروشگاه} خوش آمدید! از همراهی شما سپاسگزاریم.",
+    8000
+  ),
+  seedTemplate(
     "دستگاه آماده",
     "آماده شدن دستگاه",
     "{نام_مشتری} عزیز، دستگاه شما آماده تحویل است. لطفاً جهت دریافت به {نام_فروشگاه} مراجعه فرمایید.",

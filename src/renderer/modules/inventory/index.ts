@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "مدیریت کالا",
   icon: "▤",
   order: 4,
+  group: "کالا و انبار",
   component: Inventory
 });

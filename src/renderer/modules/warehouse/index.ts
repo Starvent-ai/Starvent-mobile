@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "انبار پیشرفته",
   icon: "📦",
   order: 8,
+  group: "کالا و انبار",
   component: WarehouseModule
 });

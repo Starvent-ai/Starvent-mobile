@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "فروش",
   icon: "◈",
   order: 1,
+  group: "عملیات روزانه",
   component: Sales
 });

@@ -16,6 +16,11 @@ export interface StarventPlugin {
   icon: string;
   order: number;
   component: ComponentType;
+  /** Section heading this module's nav link is grouped under (e.g.
+   *  "عملیات روزانه"). Modules that omit this fall under a generic
+   *  "سایر" section — the sidebar never needs to know about a module
+   *  by name to group it correctly. */
+  group?: string;
 }
 
 class PluginRegistry {

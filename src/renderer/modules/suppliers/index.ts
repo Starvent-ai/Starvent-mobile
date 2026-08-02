@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "تأمین‌کنندگان",
   icon: "🚚",
   order: 9,
+  group: "مالی",
   component: Suppliers
 });

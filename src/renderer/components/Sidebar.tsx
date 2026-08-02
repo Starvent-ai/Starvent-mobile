@@ -6,8 +6,25 @@ interface SidebarProps {
   onSelect: (id: string) => void;
 }
 
+const FALLBACK_GROUP = "سایر";
+
 export function Sidebar({ activeId, onSelect }: SidebarProps): JSX.Element {
   const plugins = pluginRegistry.getAll();
+
+  // Group while preserving each plugin's own `order` — the plugin list is
+  // already order-sorted, so the first time a group name is seen fixes
+  // that group's position too. No module needs to know about any other
+  // module to be grouped correctly.
+  const groups: { name: string; plugins: typeof plugins }[] = [];
+  for (const plugin of plugins) {
+    const groupName = plugin.group ?? FALLBACK_GROUP;
+    let group = groups.find((g) => g.name === groupName);
+    if (!group) {
+      group = { name: groupName, plugins: [] };
+      groups.push(group);
+    }
+    group.plugins.push(plugin);
+  }
 
   return (
     <aside className="sidebar">
@@ -16,19 +33,24 @@ export function Sidebar({ activeId, onSelect }: SidebarProps): JSX.Element {
         <span className="sidebar__brand-name">Starvent</span>
       </div>
       <nav className="sidebar__nav">
-        {plugins.map((plugin) => (
-          <button
-            key={plugin.id}
-            type="button"
-            className="sidebar__link"
-            data-active={plugin.id === activeId}
-            onClick={() => onSelect(plugin.id)}
-          >
-            <span className="sidebar__icon" aria-hidden="true">
-              {plugin.icon}
-            </span>
-            <span>{plugin.label}</span>
-          </button>
+        {groups.map((group) => (
+          <div key={group.name} className="sidebar__group">
+            <span className="sidebar__group-label">{group.name}</span>
+            {group.plugins.map((plugin) => (
+              <button
+                key={plugin.id}
+                type="button"
+                className="sidebar__link"
+                data-active={plugin.id === activeId}
+                onClick={() => onSelect(plugin.id)}
+              >
+                <span className="sidebar__icon" aria-hidden="true">
+                  {plugin.icon}
+                </span>
+                <span>{plugin.label}</span>
+              </button>
+            ))}
+          </div>
         ))}
       </nav>
 

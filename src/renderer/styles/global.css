@@ -140,6 +140,23 @@ button {
   background: transparent;
 }
 
+.sidebar__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sv-space-1);
+  margin-bottom: var(--sv-space-3);
+}
+
+.sidebar__group-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--sv-text-600);
+  text-transform: uppercase;
+  padding: 0 var(--sv-space-3);
+  margin-bottom: 2px;
+}
+
 .sidebar__link {
   display: flex;
   align-items: center;

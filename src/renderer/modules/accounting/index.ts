@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "حسابداری",
   icon: "💰",
   order: 10,
+  group: "مالی",
   component: Accounting
 });

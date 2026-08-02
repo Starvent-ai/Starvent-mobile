@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "چاپ",
   icon: "🖨",
   order: 12,
+  group: "ابزارها",
   component: Printing
 });

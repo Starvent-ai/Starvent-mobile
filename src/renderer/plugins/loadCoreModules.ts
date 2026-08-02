@@ -15,7 +15,6 @@ import "@/modules/installments";
 import "@/modules/collateral";
 import "@/modules/printing";
 import "@/modules/security";
-import "@/modules/promptBuilder";
 import "@/modules/notifications";
 import "@/modules/settings";
 import "@/plugins/examples/aiSuggestionsPlugin";

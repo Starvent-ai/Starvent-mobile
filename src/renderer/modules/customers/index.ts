@@ -6,5 +6,6 @@ pluginRegistry.register({
   label: "مشتریان",
   icon: "☺",
   order: 3,
+  group: "عملیات روزانه",
   component: Customers
 });
