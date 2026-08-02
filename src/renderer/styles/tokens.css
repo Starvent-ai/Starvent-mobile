@@ -9,9 +9,13 @@
 
 :root {
   /* Surfaces */
-  --sv-bg: #0a0a0d;
-  --sv-surface: #141418;
-  --sv-surface-raised: #1c1c23;
+  /* Base page background is now a warm light cream (was near-black) — see
+     the body background-image in global.css for the fine gold veining.
+     Panels ("windows") stay dark, but semi-transparent + blurred, so they
+     read as frosted dark glass floating over the lighter backdrop. */
+  --sv-bg: #f4ecd9;
+  --sv-surface: rgba(20, 20, 24, 0.74);
+  --sv-surface-raised: rgba(28, 28, 35, 0.8);
   --sv-border: #2a2a33;
   --sv-border-strong: #38383f;
 
