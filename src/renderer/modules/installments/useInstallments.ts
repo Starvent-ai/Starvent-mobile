@@ -5,6 +5,7 @@ import type {
   InstallmentContractStatus,
   InstallmentPayment
 } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface InstallmentState {
   companies: InstallmentCompany[];
@@ -23,7 +24,7 @@ const installmentStore = createStore<InstallmentState>({
 });
 
 function createCompany(name: string, terms: string): void {
-  const company: InstallmentCompany = { id: `ic-${Date.now()}`, name, terms };
+  const company: InstallmentCompany = { id: generateId("ic"), name, terms };
   installmentStore.setState((prev) => ({ ...prev, companies: [...prev.companies, company] }));
 }
 
@@ -43,7 +44,7 @@ function createContract(input: NewContractInput): void {
   const installmentCount = Math.max(1, input.installmentCount);
   const contract: InstallmentContract = {
     ...input,
-    id: `con-${Date.now()}`,
+    id: generateId("con"),
     installmentCount,
     monthlyAmount: remaining / installmentCount,
     status: "در جریان",
@@ -59,7 +60,7 @@ function recordPayment(contractId: string, amount: number): void {
 
   const paidCount = state.payments.filter((p) => p.contractId === contractId).length;
   const payment: InstallmentPayment = {
-    id: `pay-${Date.now()}`,
+    id: generateId("pay"),
     contractId,
     installmentNumber: paidCount + 1,
     amount,

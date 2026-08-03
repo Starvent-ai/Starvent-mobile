@@ -1,6 +1,7 @@
 import { createStore } from "@/state/createStore";
 import type { Supplier, SupplierPurchase } from "@shared/types";
 import { accountingActions } from "@/modules/accounting/useAccounting";
+import { generateId } from "@/lib/id";
 
 interface SuppliersState {
   suppliers: Supplier[];
@@ -32,7 +33,7 @@ interface NewSupplierInput {
 function createSupplier(input: NewSupplierInput): void {
   const supplier: Supplier = {
     ...input,
-    id: `sup-${Date.now()}`,
+    id: generateId("sup"),
     balance: 0,
     rating: 0,
     createdAt: new Date().toISOString()
@@ -50,7 +51,7 @@ interface NewPurchaseInput {
 function recordPurchase(input: NewPurchaseInput): void {
   const purchase: SupplierPurchase = {
     ...input,
-    id: `pur-${Date.now()}`,
+    id: generateId("pur"),
     date: new Date().toISOString().slice(0, 10)
   };
   suppliersStore.setState((prev) => ({

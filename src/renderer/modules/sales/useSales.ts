@@ -3,6 +3,7 @@ import type { SaleRecord } from "@shared/types";
 import { inventoryActions } from "@/modules/inventory/useInventory";
 import { customerActions } from "@/modules/customers/useCustomers";
 import { accountingActions } from "@/modules/accounting/useAccounting";
+import { generateId } from "@/lib/id";
 
 interface SalesState {
   sales: SaleRecord[];
@@ -31,7 +32,7 @@ function recordSale(input: RecordSaleInput): { ok: true; saleId: string } | { ok
 
   const total = item.salePrice * input.quantity;
   const record: SaleRecord = {
-    id: `sale-${Date.now()}`,
+    id: generateId("sale"),
     itemId: item.id,
     itemName: item.name,
     customerId: input.customerId,

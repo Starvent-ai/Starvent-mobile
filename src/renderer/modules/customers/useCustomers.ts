@@ -1,6 +1,7 @@
 import { createStore } from "@/state/createStore";
 import type { Customer } from "@shared/types";
 import { smsEventQueueActions } from "@/modules/notifications/useSmsEventQueue";
+import { generateId } from "@/lib/id";
 
 interface CustomersState {
   customers: Customer[];
@@ -18,7 +19,7 @@ function addCustomer(customer: Omit<Customer, "id" | "totalPurchases">): void {
   customersStore.setState((prev) => ({
     customers: [
       ...prev.customers,
-      { ...customer, id: `cus-${Date.now()}`, totalPurchases: 0 }
+      { ...customer, id: generateId("cus"), totalPurchases: 0 }
     ]
   }));
 

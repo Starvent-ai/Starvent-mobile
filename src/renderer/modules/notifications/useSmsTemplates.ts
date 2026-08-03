@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { SmsTemplate, SmsTemplateCategory } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface TemplatesState {
   templates: SmsTemplate[];
@@ -63,7 +64,7 @@ interface NewTemplateInput {
 }
 
 function createTemplate(input: NewTemplateInput): void {
-  const template: SmsTemplate = { ...input, id: `tmpl-${Date.now()}`, createdAt: new Date().toISOString() };
+  const template: SmsTemplate = { ...input, id: generateId("tmpl"), createdAt: new Date().toISOString() };
   templatesStore.setState((prev) => ({ templates: [...prev.templates, template] }));
 }
 

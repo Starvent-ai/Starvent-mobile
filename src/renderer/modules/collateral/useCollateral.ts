@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { CollateralRecord, CollateralStatus, CollateralType } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface CollateralState {
   records: CollateralRecord[];
@@ -18,7 +19,7 @@ interface NewCollateralInput {
 function createCollateral(input: NewCollateralInput): void {
   const record: CollateralRecord = {
     ...input,
-    id: `col-${Date.now()}`,
+    id: generateId("col"),
     status: "معتبر",
     createdAt: new Date().toISOString()
   };

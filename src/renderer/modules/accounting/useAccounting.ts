@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { AccountingCategory, CashTransaction, CheckRecord } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface AccountingState {
   transactions: CashTransaction[];
@@ -19,7 +20,7 @@ interface NewTransactionInput {
 function recordTransaction(input: NewTransactionInput): void {
   const transaction: CashTransaction = {
     ...input,
-    id: `txn-${Date.now()}`,
+    id: generateId("txn"),
     date: new Date().toISOString().slice(0, 10),
     createdAt: new Date().toISOString(),
     voided: false
@@ -50,7 +51,7 @@ interface NewCheckInput {
 function recordCheck(input: NewCheckInput): void {
   const check: CheckRecord = {
     ...input,
-    id: `chk-${Date.now()}`,
+    id: generateId("chk"),
     status: "در جریان",
     createdAt: new Date().toISOString()
   };

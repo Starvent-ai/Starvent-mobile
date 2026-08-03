@@ -9,6 +9,7 @@ import type {
   Warehouse,
   WarehouseStock
 } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 export const CENTRAL_WAREHOUSE_ID = "wh-central";
 
@@ -38,7 +39,7 @@ const warehouseStore = createStore<WarehouseState>({
 });
 
 function createWarehouse(name: string, address: string): void {
-  const warehouse: Warehouse = { id: `wh-${Date.now()}`, name, address };
+  const warehouse: Warehouse = { id: generateId("wh"), name, address };
   warehouseStore.setState((prev) => ({ ...prev, warehouses: [...prev.warehouses, warehouse] }));
 }
 
@@ -88,7 +89,7 @@ function transferStock(input: TransferInput): { ok: boolean; error?: string } {
 
   const transfer: StockTransfer = {
     ...input,
-    id: `trf-${Date.now()}`,
+    id: generateId("trf"),
     date: new Date().toISOString().slice(0, 10)
   };
   warehouseStore.setState((prev) => ({ ...prev, transfers: [...prev.transfers, transfer] }));
@@ -114,7 +115,7 @@ function recordStocktake(input: StocktakeInput): void {
 
   const entry: StocktakeEntry = {
     ...input,
-    id: `stk-${Date.now()}`,
+    id: generateId("stk"),
     systemQuantity,
     difference,
     date: new Date().toISOString().slice(0, 10)
@@ -132,7 +133,7 @@ interface ReservationInput {
 function createReservation(input: ReservationInput): void {
   const reservation: StockReservation = {
     ...input,
-    id: `rsv-${Date.now()}`,
+    id: generateId("rsv"),
     status: "رزرو شده",
     createdAt: new Date().toISOString()
   };
@@ -157,7 +158,7 @@ function recordDefective(input: DefectiveInput): void {
   adjustStock(input.warehouseId, input.itemId, -input.quantity);
   const entry: DefectiveStockEntry = {
     ...input,
-    id: `def-${Date.now()}`,
+    id: generateId("def"),
     date: new Date().toISOString().slice(0, 10)
   };
   warehouseStore.setState((prev) => ({ ...prev, defective: [...prev.defective, entry] }));
@@ -175,7 +176,7 @@ function recordReturn(input: ReturnInput): void {
   inventoryActions.adjustQuantity(input.itemId, input.quantity);
   const entry: StockReturnEntry = {
     ...input,
-    id: `ret-${Date.now()}`,
+    id: generateId("ret"),
     date: new Date().toISOString().slice(0, 10)
   };
   warehouseStore.setState((prev) => ({ ...prev, returns: [...prev.returns, entry] }));

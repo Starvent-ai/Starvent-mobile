@@ -1,5 +1,6 @@
 import { createStore } from "@/state/createStore";
 import type { InventoryItem } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface InventoryState {
   items: InventoryItem[];
@@ -42,7 +43,7 @@ const inventoryStore = createStore<InventoryState>({ items: seedItems });
 
 function addItem(item: Omit<InventoryItem, "id">): void {
   inventoryStore.setState((prev) => ({
-    items: [...prev.items, { ...item, id: `itm-${Date.now()}` }]
+    items: [...prev.items, { ...item, id: generateId("itm") }]
   }));
 }
 

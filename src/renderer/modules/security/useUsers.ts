@@ -2,6 +2,7 @@ import { createStore } from "@/state/createStore";
 import { sha256Hex } from "@/lib/hash";
 import { activityLogActions } from "./useActivityLog";
 import type { AppUser, UserRole } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface UsersState {
   users: AppUser[];
@@ -24,7 +25,7 @@ async function createUser(input: CreateUserInput): Promise<{ ok: boolean; error?
   }
   const passwordHash = sha256Hex(input.password);
   const user: AppUser = {
-    id: `usr-${Date.now()}`,
+    id: generateId("usr"),
     fullName: input.fullName,
     username: input.username,
     passwordHash,

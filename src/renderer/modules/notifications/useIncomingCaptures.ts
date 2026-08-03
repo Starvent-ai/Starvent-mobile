@@ -4,6 +4,7 @@ import { customerActions } from "@/modules/customers/useCustomers";
 import { customerIntakeActions } from "@/state/customerIntakeStore";
 import { navigationActions } from "@/state/navigationStore";
 import type { IncomingPhoneCapture } from "@shared/types";
+import { generateId } from "@/lib/id";
 
 interface CapturesState {
   captures: IncomingPhoneCapture[];
@@ -16,7 +17,7 @@ function addCapture(phone: string, source: IncomingPhoneCapture["source"]): void
   if (!normalized) return;
   const matched = customerActions.getState().customers.find((c) => c.phone === normalized);
   const capture: IncomingPhoneCapture = {
-    id: `cap-${Date.now()}`,
+    id: generateId("cap"),
     phone: normalized,
     matchedCustomerId: matched?.id ?? null,
     source,

@@ -3,6 +3,7 @@ import type { RepairPriority, RepairStatus, RepairTicket } from "@shared/types";
 import { customerActions } from "@/modules/customers/useCustomers";
 import { accountingActions } from "@/modules/accounting/useAccounting";
 import { smsEventQueueActions } from "@/modules/notifications/useSmsEventQueue";
+import { generateId } from "@/lib/id";
 
 interface RepairsState {
   tickets: RepairTicket[];
@@ -49,7 +50,7 @@ interface NewTicketInput {
 function createTicket(input: NewTicketInput): void {
   const ticket: RepairTicket = {
     ...input,
-    id: `rep-${Date.now()}`,
+    id: generateId("rep"),
     partsUsed: "",
     laborFee: 0,
     status: "دریافت شده",
