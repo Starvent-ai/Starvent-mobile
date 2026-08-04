@@ -239,6 +239,14 @@ export interface InstallmentContract {
   status: InstallmentContractStatus;
   guaranteeNote: string;
   createdAt: string;
+  /** Installment fee/interest percent applied to the remaining balance
+   *  (totalAmount - downPayment) at the moment the contract was created —
+   *  stored on the contract itself so it stays fixed even if the shop's
+   *  default percent in Settings changes later. 0 means no fee. */
+  feePercent: number;
+  /** The fee amount in تومان that feePercent produced, already folded into
+   *  monthlyAmount — kept separately just so it can be shown/printed. */
+  feeAmount: number;
 }
 
 export interface InstallmentPayment {

@@ -133,7 +133,11 @@ export function Printing(): JSX.Element {
             <p className="empty-state">یک تعمیر برای پیش‌نمایش انتخاب کنید.</p>
           )
         ) : selectedContract ? (
-          <InstallmentContractBody contract={selectedContract} paidCount={paidInstallmentCount(selectedContract.id)} />
+          <InstallmentContractBody
+            contract={selectedContract}
+            paidCount={paidInstallmentCount(selectedContract.id)}
+            printFields={storeProfile.installmentPrintFields}
+          />
         ) : (
           <p className="empty-state">یک پروندهٔ اقساط برای پیش‌نمایش انتخاب کنید.</p>
         )}
@@ -255,7 +259,15 @@ export function buildInstallmentSchedule(contract: InstallmentContract, paidCoun
   });
 }
 
-function InstallmentContractBody({ contract, paidCount }: { contract: InstallmentContract; paidCount: number }): JSX.Element {
+function InstallmentContractBody({
+  contract,
+  paidCount,
+  printFields
+}: {
+  contract: InstallmentContract;
+  paidCount: number;
+  printFields: StoreProfile["installmentPrintFields"];
+}): JSX.Element {
   const schedule = buildInstallmentSchedule(contract, paidCount);
 
   return (
@@ -271,35 +283,49 @@ function InstallmentContractBody({ contract, paidCount }: { contract: Installmen
             label="پیش‌پرداخت"
             value={contract.downPayment > 0 ? `${contract.downPayment.toLocaleString("fa-IR")} تومان` : null}
           />
-          <ReceiptRow label="تعداد اقساط" value={contract.installmentCount} />
-          <ReceiptRow label="مبلغ هر قسط" value={`${contract.monthlyAmount.toLocaleString("fa-IR")} تومان`} />
-          <ReceiptRow label="تاریخ شروع" value={formatDateForDisplay(contract.startDate)} />
-          <ReceiptRow label="وضعیت پرونده" value={contract.status} />
-          <ReceiptRow label="یادداشت ضمانت" value={contract.guaranteeNote} />
+          <ReceiptRow
+            label="کارمزد/سود اقساطی"
+            value={
+              contract.feeAmount > 0
+                ? `${contract.feeAmount.toLocaleString("fa-IR")} تومان (${contract.feePercent}%)`
+                : null
+            }
+          />
+          {printFields.installmentCount ? <ReceiptRow label="تعداد اقساط" value={contract.installmentCount} /> : null}
+          {printFields.monthlyAmount ? (
+            <ReceiptRow label="مبلغ هر قسط" value={`${contract.monthlyAmount.toLocaleString("fa-IR")} تومان`} />
+          ) : null}
+          {printFields.startDate ? <ReceiptRow label="تاریخ شروع" value={formatDateForDisplay(contract.startDate)} /> : null}
+          {printFields.status ? <ReceiptRow label="وضعیت پرونده" value={contract.status} /> : null}
+          {printFields.guaranteeNote ? <ReceiptRow label="یادداشت ضمانت" value={contract.guaranteeNote} /> : null}
         </tbody>
       </table>
 
-      <h3 style={{ marginTop: 16 }}>جدول اقساط</h3>
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>قسط</th>
-            <th>سررسید</th>
-            <th>مبلغ</th>
-            <th>وضعیت</th>
-          </tr>
-        </thead>
-        <tbody>
-          {schedule.map((row) => (
-            <tr key={row.installmentNumber}>
-              <td>{row.installmentNumber}</td>
-              <td>{formatDateForDisplay(row.dueDate.toISOString())}</td>
-              <td>{row.amount.toLocaleString("fa-IR")} تومان</td>
-              <td>{row.paid ? "پرداخت‌شده" : "پرداخت‌نشده"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {printFields.scheduleTable ? (
+        <>
+          <h3 style={{ marginTop: 16 }}>جدول اقساط</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>قسط</th>
+                <th>سررسید</th>
+                <th>مبلغ</th>
+                <th>وضعیت</th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map((row) => (
+                <tr key={row.installmentNumber}>
+                  <td>{row.installmentNumber}</td>
+                  <td>{formatDateForDisplay(row.dueDate.toISOString())}</td>
+                  <td>{row.amount.toLocaleString("fa-IR")} تومان</td>
+                  <td>{row.paid ? "پرداخت‌شده" : "پرداخت‌نشده"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
     </div>
   );
 }

@@ -31,4 +31,30 @@ describe("storeProfile", () => {
     expect(profile.storeName).toBe("فقط اسم");
     expect(profile.paperSize).toBe(DEFAULT_STORE_PROFILE.paperSize);
   });
+
+  it("defaults the installment reminder window to 3 days and all print fields on", () => {
+    expect(DEFAULT_STORE_PROFILE.installmentReminderDaysBefore).toBe(3);
+    expect(DEFAULT_STORE_PROFILE.installmentPrintFields).toEqual({
+      installmentCount: true,
+      monthlyAmount: true,
+      startDate: true,
+      status: true,
+      guaranteeNote: true,
+      scheduleTable: true
+    });
+  });
+
+  it("persists a customized installment reminder window and print field toggles", async () => {
+    const profile: StoreProfile = {
+      ...DEFAULT_STORE_PROFILE,
+      installmentReminderDaysBefore: 7,
+      installmentPrintFields: { ...DEFAULT_STORE_PROFILE.installmentPrintFields, guaranteeNote: false, scheduleTable: false }
+    };
+    await saveStoreProfile(profile);
+    const reloaded = await loadStoreProfile();
+    expect(reloaded.installmentReminderDaysBefore).toBe(7);
+    expect(reloaded.installmentPrintFields.guaranteeNote).toBe(false);
+    expect(reloaded.installmentPrintFields.scheduleTable).toBe(false);
+    expect(reloaded.installmentPrintFields.installmentCount).toBe(true);
+  });
 });

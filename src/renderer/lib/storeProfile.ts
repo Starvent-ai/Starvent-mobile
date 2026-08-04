@@ -21,6 +21,25 @@ export interface StoreProfile {
   /** If true, after a successful sale the app jumps straight to Printing
    *  with that sale pre-selected. If false, the sale is just recorded. */
   autoPrintAfterSale: boolean;
+  /** How many days before an installment's due date the reminder in
+   *  Notifications starts showing it (and offering to send an SMS). */
+  installmentReminderDaysBefore: number;
+  /** Default installment fee/interest percent, applied to the remaining
+   *  balance (totalAmount - downPayment) when a new contract is created —
+   *  pre-fills the field in the contract form, same "prefill, not forced"
+   *  pattern as defaultTaxPercent in the Calculator. */
+  installmentFeePercent: number;
+  /** Which fields appear on the printed installment schedule (Printing →
+   *  پروندهٔ فروش اقساطی). مشتری/شرح کالا/مبلغ کل always print — these are
+   *  the optional ones a shop may want to leave off the printed sheet. */
+  installmentPrintFields: {
+    installmentCount: boolean;
+    monthlyAmount: boolean;
+    startDate: boolean;
+    status: boolean;
+    guaranteeNote: boolean;
+    scheduleTable: boolean;
+  };
 }
 
 export const STORE_PROFILE_KEY = "store-profile";
@@ -40,7 +59,17 @@ export const DEFAULT_STORE_PROFILE: StoreProfile = {
   proxyAddress: "",
   offlineModeEnabled: false,
   defaultTaxPercent: 9,
-  autoPrintAfterSale: false
+  autoPrintAfterSale: false,
+  installmentReminderDaysBefore: 3,
+  installmentFeePercent: 0,
+  installmentPrintFields: {
+    installmentCount: true,
+    monthlyAmount: true,
+    startDate: true,
+    status: true,
+    guaranteeNote: true,
+    scheduleTable: true
+  }
 };
 
 /**

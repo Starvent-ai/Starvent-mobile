@@ -133,6 +133,95 @@ export function StoreSettings(): JSX.Element {
         </div>
       </div>
 
+      <h3 style={{ marginTop: "var(--sv-space-6)" }}>تنظیمات فروش اقساطی</h3>
+      <div className="form-row">
+        <div>
+          <label htmlFor="ss-inst-fee">درصد کارمزد/سود اقساطی پیش‌فرض</label>
+          <input
+            id="ss-inst-fee"
+            type="number"
+            min={0}
+            value={profile.installmentFeePercent}
+            onChange={(e) => update("installmentFeePercent", Number(e.target.value) || 0)}
+          />
+        </div>
+        <div>
+          <label htmlFor="ss-inst-reminder">یادآوری پیامکی چند روز قبل از سررسید قسط</label>
+          <input
+            id="ss-inst-reminder"
+            type="number"
+            min={0}
+            value={profile.installmentReminderDaysBefore}
+            onChange={(e) => update("installmentReminderDaysBefore", Number(e.target.value) || 0)}
+          />
+        </div>
+      </div>
+      <p style={{ color: "var(--sv-text-600)", marginTop: 0 }}>
+        موارد زیر در «پروندهٔ فروش اقساطی» چاپ می‌شوند (مشتری، شرح کالا و مبلغ کل همیشه چاپ می‌شوند):
+      </p>
+      <div className="form-row">
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.installmentCount}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, installmentCount: e.target.checked })
+            }
+          />
+          تعداد اقساط
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.monthlyAmount}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, monthlyAmount: e.target.checked })
+            }
+          />
+          مبلغ هر قسط
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.startDate}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, startDate: e.target.checked })
+            }
+          />
+          تاریخ شروع
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.status}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, status: e.target.checked })
+            }
+          />
+          وضعیت پرونده
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.guaranteeNote}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, guaranteeNote: e.target.checked })
+            }
+          />
+          یادداشت ضمانت
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={profile.installmentPrintFields.scheduleTable}
+            onChange={(e) =>
+              update("installmentPrintFields", { ...profile.installmentPrintFields, scheduleTable: e.target.checked })
+            }
+          />
+          جدول کامل اقساط
+        </label>
+      </div>
+
       <h3 style={{ marginTop: "var(--sv-space-6)" }}>تنظیمات پرینتر</h3>
       <div className="form-row">
         <div>

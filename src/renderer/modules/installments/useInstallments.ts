@@ -38,16 +38,25 @@ interface NewContractInput {
   installmentCount: number;
   startDate: string;
   guaranteeNote: string;
+  /** Installment fee/interest percent to apply to the remaining balance
+   *  (totalAmount - downPayment) before splitting it into installments.
+   *  Defaults to 0 — no fee — for callers/tests that don't pass it. */
+  feePercent?: number;
 }
 
 function createContract(input: NewContractInput): void {
-  const remaining = Math.max(0, input.totalAmount - input.downPayment);
+  const feePercent = input.feePercent ?? 0;
+  const baseRemaining = Math.max(0, input.totalAmount - input.downPayment);
+  const feeAmount = Math.round((baseRemaining * feePercent) / 100);
+  const remaining = baseRemaining + feeAmount;
   const installmentCount = Math.max(1, input.installmentCount);
   const contract: InstallmentContract = {
     ...input,
     id: generateId("con"),
     installmentCount,
     monthlyAmount: remaining / installmentCount,
+    feePercent,
+    feeAmount,
     status: "در جریان",
     createdAt: new Date().toISOString()
   };

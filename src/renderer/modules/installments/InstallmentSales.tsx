@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useInstallments } from "./useInstallments";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import type { InstallmentContract, InstallmentContractStatus } from "@shared/types";
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { loadStoreProfile } from "@/lib/storeProfile";
 
 export function InstallmentSales(): JSX.Element {
   const { companies, contracts, createCompany, createContract, recordPayment, updateContractStatus, paidInstallmentCount } =
@@ -25,6 +26,17 @@ export function InstallmentSales(): JSX.Element {
   const [installmentCount, setInstallmentCount] = useState("6");
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [guaranteeNote, setGuaranteeNote] = useState("");
+  const [feePercent, setFeePercent] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadStoreProfile().then((profile) => {
+      if (!cancelled) setFeePercent(profile.installmentFeePercent);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState("0");
@@ -48,7 +60,8 @@ export function InstallmentSales(): JSX.Element {
       downPayment,
       installmentCount: Number(installmentCount) || 1,
       startDate,
-      guaranteeNote: guaranteeNote.trim()
+      guaranteeNote: guaranteeNote.trim(),
+      feePercent
     });
     setCustomerName("");
     setItemDescription("");
@@ -136,6 +149,16 @@ export function InstallmentSales(): JSX.Element {
             <div>
               <label htmlFor="con-count">تعداد اقساط</label>
               <input id="con-count" type="number" min={1} value={installmentCount} onChange={(e) => setInstallmentCount(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="con-fee">درصد کارمزد/سود (روی مبلغ باقیمانده)</label>
+              <input
+                id="con-fee"
+                type="number"
+                min={0}
+                value={feePercent}
+                onChange={(e) => setFeePercent(Number(e.target.value) || 0)}
+              />
             </div>
             <div>
               <label htmlFor="con-guarantee">یادداشت ضمانت</label>

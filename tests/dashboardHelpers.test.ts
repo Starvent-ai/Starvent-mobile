@@ -17,6 +17,8 @@ function makeContract(overrides: Partial<InstallmentContract> = {}): Installment
     guaranteeNote: "",
     status: "در جریان",
     createdAt: new Date().toISOString(),
+    feePercent: 0,
+    feeAmount: 0,
     ...overrides
   };
 }

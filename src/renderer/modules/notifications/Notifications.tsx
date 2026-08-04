@@ -119,7 +119,7 @@ export function Notifications(): JSX.Element {
       const nextDue = getNextDueDate(contract, paidInstallmentCount(contract.id));
       if (!nextDue) continue;
       const diffDays = Math.floor((nextDue.getTime() - Date.now()) / 86400000);
-      if (diffDays <= 3) {
+      if (diffDays <= storeProfile.installmentReminderDaysBefore) {
         items.push({
           key: `inst-${contract.id}`,
           label: `قسط ${contract.customerName} نزدیک سررسید (${formatDateForDisplay(nextDue.toISOString())})`,
@@ -148,7 +148,7 @@ export function Notifications(): JSX.Element {
     }
 
     return items;
-  }, [customers, contracts, collateralRecords, isNearDue]);
+  }, [customers, contracts, collateralRecords, isNearDue, storeProfile.installmentReminderDaysBefore]);
 
   function openCompose(target: ComposeTarget): void {
     setComposeTarget(target);
