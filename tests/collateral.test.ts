@@ -15,7 +15,8 @@ describe("collateral", () => {
       relatedTo: "پروندهٔ تست",
       description: "چک تست ۱",
       guarantorName: "",
-      dueDate: daysFromNow(2)
+      dueDate: daysFromNow(2),
+      amount: 0
     });
     const records = collateralActions.getState().records;
     const created = records[records.length - 1];
@@ -28,7 +29,8 @@ describe("collateral", () => {
       relatedTo: "پروندهٔ تست ۲",
       description: "سفتهٔ تست",
       guarantorName: "",
-      dueDate: daysFromNow(60)
+      dueDate: daysFromNow(60),
+      amount: 0
     });
     const records = collateralActions.getState().records;
     const created = records[records.length - 1];
@@ -41,7 +43,8 @@ describe("collateral", () => {
       relatedTo: "پروندهٔ تست ۳",
       description: "طلای تست",
       guarantorName: "",
-      dueDate: daysFromNow(1)
+      dueDate: daysFromNow(1),
+      amount: 500000
     });
     const records = collateralActions.getState().records;
     const created: CollateralRecord = records[records.length - 1];

@@ -260,6 +260,9 @@ export interface CollateralRecord {
   guarantorName: string;
   dueDate: string;
   status: CollateralStatus;
+  /** Estimated value of the collateral in تومان — optional, only needed so
+   *  that seizing it (status "ضبط شده") can be recorded in accounting. */
+  amount: number;
   createdAt: string;
 }
 

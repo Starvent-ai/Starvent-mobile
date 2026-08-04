@@ -6,6 +6,7 @@ import type {
   InstallmentPayment
 } from "@shared/types";
 import { generateId } from "@/lib/id";
+import { accountingActions } from "@/modules/accounting/useAccounting";
 
 interface InstallmentState {
   companies: InstallmentCompany[];
@@ -51,6 +52,18 @@ function createContract(input: NewContractInput): void {
     createdAt: new Date().toISOString()
   };
   installmentStore.setState((prev) => ({ ...prev, contracts: [...prev.contracts, contract] }));
+
+  // The down payment is cash in hand the moment the contract is signed —
+  // record it as income right away, same as any other sale proceeds.
+  if (contract.downPayment > 0) {
+    accountingActions.recordTransaction({
+      type: "درآمد",
+      account: "صندوق",
+      category: "فروش",
+      amount: contract.downPayment,
+      description: `پیش‌پرداخت فروش اقساطی «${contract.itemDescription}» — ${contract.customerName || "بدون نام"}`
+    });
+  }
 }
 
 function recordPayment(contractId: string, amount: number): void {
@@ -79,6 +92,18 @@ function recordPayment(contractId: string, amount: number): void {
       )
     };
   });
+
+  // Each recorded installment payment is real cash received — one accounting
+  // income entry per payment, exactly matching the button click that created it.
+  if (amount > 0) {
+    accountingActions.recordTransaction({
+      type: "درآمد",
+      account: "صندوق",
+      category: "فروش",
+      amount,
+      description: `قسط شمارهٔ ${payment.installmentNumber} — «${contract.itemDescription}» — ${contract.customerName || "بدون نام"}`
+    });
+  }
 }
 
 function updateContractStatus(contractId: string, status: InstallmentContractStatus): void {

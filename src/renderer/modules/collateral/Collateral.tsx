@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useCollateral } from "./useCollateral";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
+import { CurrencyInput } from "@/components/CurrencyInput";
 import type { CollateralRecord, CollateralStatus, CollateralType } from "@shared/types";
 import { formatDateForDisplay } from "@/lib/jalali";
 
@@ -16,6 +17,7 @@ export function Collateral(): JSX.Element {
   const [description, setDescription] = useState("");
   const [guarantorName, setGuarantorName] = useState("");
   const [dueDate, setDueDate] = useState(new Date().toISOString().slice(0, 10));
+  const [amount, setAmount] = useState(0);
 
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
@@ -25,11 +27,13 @@ export function Collateral(): JSX.Element {
       relatedTo: relatedTo.trim(),
       description: description.trim(),
       guarantorName: guarantorName.trim(),
-      dueDate
+      dueDate,
+      amount
     });
     setRelatedTo("");
     setDescription("");
     setGuarantorName("");
+    setAmount(0);
   }
 
   const nearDueCount = records.filter(isNearDue).length;
@@ -70,6 +74,10 @@ export function Collateral(): JSX.Element {
               <label htmlFor="col-due">سررسید</label>
               <input id="col-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
+            <div>
+              <label htmlFor="col-amount">ارزش تخمینی (اختیاری)</label>
+              <CurrencyInput id="col-amount" value={amount} onChange={setAmount} />
+            </div>
           </div>
           <div className="form-row">
             <div style={{ gridColumn: "1 / -1" }}>
@@ -77,6 +85,9 @@ export function Collateral(): JSX.Element {
               <input id="col-desc" value={description} onChange={(e) => setDescription(e.target.value)} required />
             </div>
           </div>
+          <p style={{ margin: "4px 0 16px", fontSize: 13, color: "var(--sv-text-400)" }}>
+            اگر ارزش ثبت بشه، در صورت «ضبط شده» شدن وضعیت، به‌طور خودکار به‌عنوان درآمد در حسابداری ثبت می‌شه.
+          </p>
           <button type="submit" className="btn-primary">
             ثبت ضمانت
           </button>
@@ -92,6 +103,7 @@ export function Collateral(): JSX.Element {
               <SortableTh label="مربوط به" sortKeyName="relatedTo" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <SortableTh label="ضامن" sortKeyName="guarantorName" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <SortableTh label="سررسید" sortKeyName="dueDate" activeKey={sortKey} direction={direction} onSort={toggleSort} />
+              <SortableTh label="ارزش" sortKeyName="amount" activeKey={sortKey} direction={direction} onSort={toggleSort} />
               <th>وضعیت</th>
             </tr>
           </thead>
@@ -102,6 +114,7 @@ export function Collateral(): JSX.Element {
                 <td>{record.relatedTo || "—"}</td>
                 <td>{record.guarantorName || "—"}</td>
                 <td className={isNearDue(record) ? "data-table__low-stock" : undefined}>{formatDateForDisplay(record.dueDate)}</td>
+                <td>{record.amount > 0 ? `${record.amount.toLocaleString("fa-IR")} تومان` : "—"}</td>
                 <td>
                   <select
                     value={record.status}

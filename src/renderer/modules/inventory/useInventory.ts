@@ -1,6 +1,7 @@
 import { createStore } from "@/state/createStore";
 import type { InventoryItem } from "@shared/types";
 import { generateId } from "@/lib/id";
+import { accountingActions } from "@/modules/accounting/useAccounting";
 
 interface InventoryState {
   items: InventoryItem[];
@@ -41,10 +42,30 @@ const seedItems: InventoryItem[] = [
 
 const inventoryStore = createStore<InventoryState>({ items: seedItems });
 
-function addItem(item: Omit<InventoryItem, "id">): void {
+/**
+ * Adds a brand-new item (new SKU) to inventory. When recordAsPurchase is
+ * true (the default — matches the checkbox in the "افزودن کالای جدید" form,
+ * pre-checked) and the item has a quantity and purchase price, this also
+ * books a matching "خرید کالا" expense in accounting — one entry per new
+ * item, same one-way trigger pattern as a sale or a supplier purchase.
+ * Pass recordAsPurchase: false for cases that are not a real cash purchase
+ * (e.g. importing an existing catalog, or a stock correction that happens
+ * to go through this function).
+ */
+function addItem(item: Omit<InventoryItem, "id">, recordAsPurchase = true): void {
   inventoryStore.setState((prev) => ({
     items: [...prev.items, { ...item, id: generateId("itm") }]
   }));
+
+  if (recordAsPurchase && item.quantity > 0 && item.purchasePrice > 0) {
+    accountingActions.recordTransaction({
+      type: "هزینه",
+      account: "صندوق",
+      category: "خرید کالا",
+      amount: item.quantity * item.purchasePrice,
+      description: `خرید کالای جدید: ${item.name} × ${item.quantity}`
+    });
+  }
 }
 
 function adjustQuantity(itemId: string, delta: number): void {

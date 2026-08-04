@@ -3,6 +3,7 @@ import { useInventory } from "./useInventory";
 import { useSortableRows } from "@/components/useSortableRows";
 import { SortableTh } from "@/components/SortableTh";
 import { useMobilePriceList } from "@/state/useMobilePriceList";
+import { CurrencyInput } from "@/components/CurrencyInput";
 import type { InventoryItem } from "@shared/types";
 
 const CATEGORIES = ["موبایل", "تبلت", "لوازم جانبی", "گجت", "تعمیراتی"];
@@ -23,7 +24,9 @@ export function Inventory(): JSX.Element {
   const [category, setCategory] = useState("موبایل");
   const [sku, setSku] = useState("");
   const [quantity, setQuantity] = useState("1");
+  const [purchasePrice, setPurchasePrice] = useState(0);
   const [salePrice, setSalePrice] = useState("");
+  const [recordAsPurchase, setRecordAsPurchase] = useState(true);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editFields, setEditFields] = useState<EditableFields>({
@@ -47,20 +50,25 @@ export function Inventory(): JSX.Element {
     event.preventDefault();
     if (!name.trim() || !sku.trim()) return;
 
-    addItem({
-      name: name.trim(),
-      category,
-      sku: sku.trim(),
-      quantity: Number(quantity) || 0,
-      purchasePrice: 0,
-      salePrice: Number(salePrice) || 0,
-      lowStockThreshold: 3
-    });
+    addItem(
+      {
+        name: name.trim(),
+        category,
+        sku: sku.trim(),
+        quantity: Number(quantity) || 0,
+        purchasePrice,
+        salePrice: Number(salePrice) || 0,
+        lowStockThreshold: 3
+      },
+      recordAsPurchase
+    );
 
     setName("");
     setSku("");
     setQuantity("1");
+    setPurchasePrice(0);
     setSalePrice("");
+    setRecordAsPurchase(true);
   }
 
   function startEdit(item: InventoryItem): void {
@@ -142,9 +150,24 @@ export function Inventory(): JSX.Element {
               <input id="item-qty" type="number" min={0} value={quantity} onChange={(e) => setQuantity(e.target.value)} />
             </div>
             <div>
-              <label htmlFor="item-price">قیمت فروش (تومان)</label>
-              <input id="item-price" type="number" min={0} value={salePrice} onChange={(e) => setSalePrice(e.target.value)} />
+              <label htmlFor="item-purchase-price">قیمت خرید (تومان)</label>
+              <CurrencyInput id="item-purchase-price" value={purchasePrice} onChange={setPurchasePrice} />
             </div>
+            <div>
+              <label htmlFor="item-price">قیمت فروش (تومان)</label>
+              <CurrencyInput id="item-price" value={Number(salePrice) || 0} onChange={(v) => setSalePrice(String(v))} />
+            </div>
+          </div>
+          <div className="form-row" style={{ alignItems: "center" }}>
+            <label htmlFor="item-record-purchase" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                id="item-record-purchase"
+                type="checkbox"
+                checked={recordAsPurchase}
+                onChange={(e) => setRecordAsPurchase(e.target.checked)}
+              />
+              ثبت به‌عنوان خرید واقعی (هزینه در حسابداری ثبت شود)
+            </label>
           </div>
           <button type="submit" className="btn-primary">
             ثبت کالا
