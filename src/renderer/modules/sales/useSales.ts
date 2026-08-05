@@ -9,7 +9,7 @@ interface SalesState {
   sales: SaleRecord[];
 }
 
-const salesStore = createStore<SalesState>({ sales: [] });
+const salesStore = createStore<SalesState>({ sales: [] }, "data-sales");
 
 interface RecordSaleInput {
   itemId: string;

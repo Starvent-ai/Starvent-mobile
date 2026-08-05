@@ -6,7 +6,7 @@ interface LogState {
   entries: SmsLogEntry[];
 }
 
-const logStore = createStore<LogState>({ entries: [] });
+const logStore = createStore<LogState>({ entries: [] }, "data-sms-log");
 
 interface NewLogInput {
   phone: string;

@@ -13,7 +13,7 @@ const seedCustomers: Customer[] = [
   { id: "cus-3", fullName: "علی کریمی", phone: "0917xxxxxxx", loyaltyTier: "عادی", totalPurchases: 1 }
 ];
 
-const customersStore = createStore<CustomersState>({ customers: seedCustomers });
+const customersStore = createStore<CustomersState>({ customers: seedCustomers }, "data-customers");
 
 function addCustomer(customer: Omit<Customer, "id" | "totalPurchases">): void {
   customersStore.setState((prev) => ({

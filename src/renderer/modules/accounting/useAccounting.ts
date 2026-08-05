@@ -7,7 +7,7 @@ interface AccountingState {
   checks: CheckRecord[];
 }
 
-const accountingStore = createStore<AccountingState>({ transactions: [], checks: [] });
+const accountingStore = createStore<AccountingState>({ transactions: [], checks: [] }, "data-accounting");
 
 interface NewTransactionInput {
   type: "درآمد" | "هزینه";

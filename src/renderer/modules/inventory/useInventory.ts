@@ -40,7 +40,7 @@ const seedItems: InventoryItem[] = [
   }
 ];
 
-const inventoryStore = createStore<InventoryState>({ items: seedItems });
+const inventoryStore = createStore<InventoryState>({ items: seedItems }, "data-inventory");
 
 /**
  * Adds a brand-new item (new SKU) to inventory. When recordAsPurchase is

@@ -55,7 +55,7 @@ const seedTemplates: SmsTemplate[] = [
   )
 ];
 
-const templatesStore = createStore<TemplatesState>({ templates: seedTemplates });
+const templatesStore = createStore<TemplatesState>({ templates: seedTemplates }, "data-sms-templates");
 
 interface NewTemplateInput {
   category: SmsTemplateCategory;

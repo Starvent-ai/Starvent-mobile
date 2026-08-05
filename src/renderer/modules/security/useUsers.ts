@@ -6,10 +6,14 @@ import { generateId } from "@/lib/id";
 
 interface UsersState {
   users: AppUser[];
-  currentUserId: string | null;
 }
 
-const usersStore = createStore<UsersState>({ users: [], currentUserId: null });
+// The user roster (accounts, roles, password hashes) is persisted — it's
+// real business data. Who is currently logged in is deliberately NOT
+// persisted (no persistKey): every app launch should require a fresh
+// login, not silently resume the previous session.
+const usersStore = createStore<UsersState>({ users: [] }, "data-users");
+const sessionStore = createStore<{ currentUserId: string | null }>({ currentUserId: null });
 
 interface CreateUserInput {
   fullName: string;
@@ -61,20 +65,21 @@ async function login(username: string, password: string): Promise<{ ok: boolean;
     return { ok: false, error: "نام کاربری یا رمز عبور نادرست است" };
   }
 
-  usersStore.setState((prev) => ({ ...prev, currentUserId: user.id }));
+  sessionStore.setState(() => ({ currentUserId: user.id }));
   activityLogActions.logActivity(`${user.fullName} (${user.username})`, "ورود", "ورود موفق به برنامه");
   return { ok: true };
 }
 
 function logout(): void {
   const label = currentUserLabel();
-  usersStore.setState((prev) => ({ ...prev, currentUserId: null }));
+  sessionStore.setState(() => ({ currentUserId: null }));
   activityLogActions.logActivity(label, "خروج", "خروج از برنامه");
 }
 
 function currentUserLabel(): string {
-  const state = usersStore.getState();
-  const user = state.users.find((u) => u.id === state.currentUserId);
+  const usersState = usersStore.getState();
+  const { currentUserId } = sessionStore.getState();
+  const user = usersState.users.find((u) => u.id === currentUserId);
   return user ? `${user.fullName} (${user.username})` : "سیستم";
 }
 
@@ -93,7 +98,8 @@ function canAccess(role: UserRole, moduleId: string): boolean {
 
 export function useUsers() {
   const state = usersStore.useStore();
-  const currentUser = state.users.find((u) => u.id === state.currentUserId) ?? null;
+  const { currentUserId } = sessionStore.useStore();
+  const currentUser = state.users.find((u) => u.id === currentUserId) ?? null;
   return {
     users: state.users,
     currentUser,
@@ -111,5 +117,6 @@ export const userActions = {
   login,
   logout,
   canAccess,
-  getState: usersStore.getState
+  getState: usersStore.getState,
+  getCurrentUserId: () => sessionStore.getState().currentUserId
 };

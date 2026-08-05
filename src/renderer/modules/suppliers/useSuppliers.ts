@@ -21,7 +21,7 @@ const seedSuppliers: Supplier[] = [
   }
 ];
 
-const suppliersStore = createStore<SuppliersState>({ suppliers: seedSuppliers, purchases: [] });
+const suppliersStore = createStore<SuppliersState>({ suppliers: seedSuppliers, purchases: [] }, "data-suppliers");
 
 interface NewSupplierInput {
   name: string;

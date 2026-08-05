@@ -7,7 +7,7 @@ interface CollateralState {
   records: CollateralRecord[];
 }
 
-const collateralStore = createStore<CollateralState>({ records: [] });
+const collateralStore = createStore<CollateralState>({ records: [] }, "data-collateral");
 
 interface NewCollateralInput {
   type: CollateralType;

@@ -28,15 +28,18 @@ const seedWarehouses: Warehouse[] = [
   { id: "wh-2", name: "انبار شعبهٔ دوم", address: "" }
 ];
 
-const warehouseStore = createStore<WarehouseState>({
-  warehouses: seedWarehouses,
-  stock: [],
-  transfers: [],
-  stocktakes: [],
-  reservations: [],
-  defective: [],
-  returns: []
-});
+const warehouseStore = createStore<WarehouseState>(
+  {
+    warehouses: seedWarehouses,
+    stock: [],
+    transfers: [],
+    stocktakes: [],
+    reservations: [],
+    defective: [],
+    returns: []
+  },
+  "data-warehouse"
+);
 
 function createWarehouse(name: string, address: string): void {
   const warehouse: Warehouse = { id: generateId("wh"), name, address };

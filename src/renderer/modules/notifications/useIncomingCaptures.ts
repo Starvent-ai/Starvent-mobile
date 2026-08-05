@@ -10,7 +10,7 @@ interface CapturesState {
   captures: IncomingPhoneCapture[];
 }
 
-const capturesStore = createStore<CapturesState>({ captures: [] });
+const capturesStore = createStore<CapturesState>({ captures: [] }, "data-incoming-captures");
 
 function addCapture(phone: string, source: IncomingPhoneCapture["source"]): void {
   const normalized = phone.replace(/\D/g, "").slice(0, 11);

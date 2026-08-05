@@ -31,7 +31,7 @@ const seedTickets: RepairTicket[] = [
   }
 ];
 
-const repairsStore = createStore<RepairsState>({ tickets: seedTickets });
+const repairsStore = createStore<RepairsState>({ tickets: seedTickets }, "data-repairs");
 
 interface NewTicketInput {
   deviceModel: string;

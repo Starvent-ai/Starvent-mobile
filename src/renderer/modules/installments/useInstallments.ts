@@ -18,11 +18,14 @@ const seedCompanies: InstallmentCompany[] = [
   { id: "ic-1", name: "بدون واسطه (مستقیم فروشگاه)", terms: "بدون کارمزد، پیگیری توسط خود فروشگاه" }
 ];
 
-const installmentStore = createStore<InstallmentState>({
-  companies: seedCompanies,
-  contracts: [],
-  payments: []
-});
+const installmentStore = createStore<InstallmentState>(
+  {
+    companies: seedCompanies,
+    contracts: [],
+    payments: []
+  },
+  "data-installments"
+);
 
 function createCompany(name: string, terms: string): void {
   const company: InstallmentCompany = { id: generateId("ic"), name, terms };

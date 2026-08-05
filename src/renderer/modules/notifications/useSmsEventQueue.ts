@@ -18,7 +18,7 @@ interface QueueState {
   events: QueuedSmsEvent[];
 }
 
-const queueStore = createStore<QueueState>({ events: [] });
+const queueStore = createStore<QueueState>({ events: [] }, "data-sms-event-queue");
 
 interface QueueEventInput {
   eventLabel: string;

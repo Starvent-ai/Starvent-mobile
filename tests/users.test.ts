@@ -21,10 +21,10 @@ describe("users", () => {
 
     const rightPassword = await userActions.login("test-user-1", "secret123");
     expect(rightPassword.ok).toBe(true);
-    expect(userActions.getState().currentUserId).not.toBeNull();
+    expect(userActions.getCurrentUserId()).not.toBeNull();
 
     userActions.logout();
-    expect(userActions.getState().currentUserId).toBeNull();
+    expect(userActions.getCurrentUserId()).toBeNull();
   });
 
   it("rejects creating a second user with a duplicate username", async () => {
@@ -61,5 +61,21 @@ describe("users", () => {
     expect(userActions.canAccess("مدیر", "accounting")).toBe(true);
     expect(userActions.canAccess("تکنسین", "accounting")).toBe(false);
     expect(userActions.canAccess("تکنسین", "repairs")).toBe(true);
+  });
+
+  it("does not carry the logged-in session in the persisted users state (only the roster persists)", async () => {
+    await userActions.createUser({
+      fullName: "کاربر سشن",
+      username: "session-user",
+      password: "secret123",
+      role: "صندوقدار"
+    });
+    await userActions.login("session-user", "secret123");
+    expect(userActions.getCurrentUserId()).not.toBeNull();
+
+    // The persisted store only ever holds the roster — the logged-in user
+    // id is deliberately kept in a separate, non-persisted store so a
+    // restart always requires a fresh login.
+    expect("currentUserId" in userActions.getState()).toBe(false);
   });
 });

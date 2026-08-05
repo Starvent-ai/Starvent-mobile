@@ -7,7 +7,7 @@ interface ActivityLogState {
 
 const MAX_ENTRIES = 500;
 
-const activityLogStore = createStore<ActivityLogState>({ entries: [] });
+const activityLogStore = createStore<ActivityLogState>({ entries: [] }, "data-activity-log");
 
 function logActivity(
   userLabel: string,
